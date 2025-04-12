@@ -1,118 +1,209 @@
 ﻿@{
+    Layout = null;
     ViewData["Title"] = "Dashboard";
 }
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"] - Oakland Homeowners Association</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Skyline Homeowners Association</title>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
 
     <style>
         body {
-            font-family: 'Josefin Sans', sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
+            color: #000;
+            background-color: #fff;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+            body.dark-mode {
+                background-color: #121212;
+                color: #f1f1f1;
+            }
+
+        .dashboard-navbar {
+            width: 100%;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: transparent;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+            .dashboard-navbar .logo img {
+                height: 40px;
+            }
+
+            .dashboard-navbar .nav-icons a {
+                color: inherit;
+                font-size: 1.4rem;
+                margin-left: 20px;
+                position: relative;
+            }
+
+            .dashboard-navbar .nav-icons .badge {
+                font-size: 0.6rem;
+                position: absolute;
+                top: -5px;
+                right: -10px;
+            }
+
+        .hero-section {
+            background: url('/images/home.jpg') no-repeat center center;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            text-align: center;
+            padding: 160px 40px 40px;
+        }
+
+            .hero-section h1 {
+                font-size: 4rem;
+                font-weight: 700;
+                margin-bottom: 10px;
+            }
+
+        .feature-section {
+            padding: 60px 20px;
+            background: inherit;
         }
 
         .feature-box {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 10px;
-            justify-content: center;
-            max-width: 800px;
-            margin: 40px auto;
+            gap: 15px;
+            max-width: 1000px;
+            margin: auto;
         }
 
         .feature-card {
-            color: white;
-            padding: 20px;
+            background-color: #fff;
+            color: #000;
+            padding: 25px;
             text-align: center;
-            width: 100%;
-            height: 250px;
+            height: 260px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border-radius: 10px;
+            border-radius: 14px;
             text-decoration: none;
-            transition: transform 0.2s ease-in-out, opacity 0.2s;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            border: 1px solid #000;
         }
 
             .feature-card:hover {
-                transform: scale(1.05);
-                opacity: 0.9;
+                transform: translateY(-5px);
+                background-color: #f7f7f7;
             }
 
-        /* Feature Card Colors */
-        .announcements, .bills-payments, .maintenance-request {
-            background-color: #565449;
+        .dark-mode .feature-card {
+            background-color: #1e1e1e;
+            color: #f1f1f1;
+            border: 1px solid #ccc;
         }
 
-        .event-calendar, .amenity-booking, .feedback {
-            background-color: #333131;
+        .feature-card i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: inherit;
+        }
+
+        .feature-card strong {
+            font-size: 1.1rem;
+        }
+
+        .feature-card p {
+            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
-
-    <div class="container text-center my-5">
-        <h2>Community Living Solutions</h2>
-        <p>
-            Enhancing your everyday living with seamless solutions designed for convenience and connection.
-            From timely updates and event planning to simplified payments, amenity reservations, and more,
-            Community Living Solutions bring everything you need right to your fingertips.
-        </p>
-
-        <!-- Feature Cards -->
-        <div class="feature-box">
-            <a href="@Url.Action("Announcements", "Home")" class="feature-card announcements">
-                <i class="bi bi-megaphone" style="font-size: 2rem;"></i>
-                <strong>Announcements</strong>
-                <p>Stay informed with important updates and notices.</p>
-            </a>
-
-            <a href="@Url.Action("EventCalendar", "Home")" class="feature-card event-calendar">
-                <i class="bi bi-calendar-event" style="font-size: 2rem;"></i>
-                <strong>Event Calendar</strong>
-                <p>Track upcoming events and activities easily.</p>
-            </a>
-
-            <a href="@Url.Action("BillsPayments", "Home")" class="feature-card bills-payments">
-                <i class="bi bi-cash-stack" style="font-size: 2rem;"></i>
-                <strong>Bills & Payments</strong>
-                <p>Manage and settle your bills in one place.</p>
-            </a>
-
-            <a href="@Url.Action("AmenityBooking", "Home")" class="feature-card amenity-booking">
-                <i class="bi bi-building" style="font-size: 2rem;"></i>
-                <strong>Amenity Booking</strong>
-                <p>Reserve shared facilities hassle-free.</p>
-            </a>
-
-            <a href="@Url.Action("MaintenanceRequest", "Home")" class="feature-card maintenance-request">
-                <i class="bi bi-tools" style="font-size: 2rem;"></i>
-                <strong>Maintenance Request</strong>
-                <p>Report and monitor maintenance concerns.</p>
-            </a>
-
-            <a href="@Url.Action("Feedback", "Home")" class="feature-card feedback">
-                <i class="bi bi-chat-dots" style="font-size: 2rem;"></i>
-                <strong>Feedback</strong>
-                <p>Share your thoughts and suggestions.</p>
+    <!-- Navbar -->
+    <header class="dashboard-navbar">
+        <div class="logo">
+            <a href="/">
+                <img src="/images/sh.png" alt="Skyline HOA Logo" />
             </a>
         </div>
-    </div>
+        <div class="nav-icons d-flex align-items-center">
+            <a href="#" title="Notifications"><i class="bi bi-bell"></i><span class="badge bg-dark rounded-pill"></span></a>
+            <a href="#" onclick="toggleDarkMode()" title="Toggle Theme"><i class="bi bi-moon-stars"></i></a>
+            <a href="#" title="Profile"><i class="bi bi-person-circle"></i></a>
+        </div>
+    </header>
 
-    <!-- Bootstrap JS -->
+    <section class="hero-section">
+        <div>
+            <h1>Welcome to Skyline Homeowners</h1>
+            <p>Enjoy seamless community living and services at your fingertips.</p>
+        </div>
+    </section>
+
+    <!-- Feature Cards Section -->
+    <section class="feature-section">
+        <div class="container text-center mb-5">
+            <h2>Community Living Solutions</h2>
+            <p>
+                From announcements to payments, maintenance to bookings —
+                everything you need is right here.
+            </p>
+        </div>
+
+        <div class="feature-box">
+            <a href="@Url.Action("Announcements", "Home")" class="feature-card">
+                <i class="bi bi-megaphone-fill"></i>
+                <strong>Announcements</strong>
+                <p>Stay informed with important updates, news, and notices.</p>
+            </a>
+            <a href="@Url.Action("EventCalendar", "Home")" class="feature-card">
+                <i class="bi bi-calendar-event-fill"></i>
+                <strong>Event Calendar</strong>
+                <p>Keep track of upcoming events, meetings, and activities with ease.</p>
+            </a>
+            <a href="@Url.Action("BillsPayments", "Home")" class="feature-card">
+                <i class="bi bi-currency-dollar"></i>
+                <strong>Bills & Payments</strong>
+                <p>View, manage, and settle your bills conveniently in one place.</p>
+            </a>
+            <a href="@Url.Action("AmenityBooking", "Home")" class="feature-card">
+                <i class="bi bi-building"></i>
+                <strong>Amenity Booking</strong>
+                <p>Reserve shared facilities hassle-free for a seamless experience.</p>
+            </a>
+            <a href="@Url.Action("MaintenanceRequest", "Home")" class="feature-card">
+                <i class="bi bi-gear-fill"></i>
+                <strong>Maintenance Request</strong>
+                <p>Report and monitor maintenance concerns for timely resolutions.</p>
+            </a>
+            <a href="@Url.Action("FormsAndContacts", "Home")" class="feature-card">
+                <i class="bi bi-chat-left-text-fill"></i>
+                <strong>Forms and Contacts</strong>
+                <p>Find essential contact information and submit forms to connect with the right department.</p>
+            </a>
+        </div>
+    </section>
+
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
