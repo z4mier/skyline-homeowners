@@ -31,7 +31,9 @@ namespace SkylineHOA.Controllers
                 var principal = new ClaimsPrincipal(identity);
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-                return Redirect("/");
+
+                TempData["LoginSuccess"] = $"{user.Role} logged in successfully!";
+                return RedirectToAction("Dashboard", "Home");
             }
 
             TempData["LoginError"] = "Invalid credentials.";
@@ -54,7 +56,7 @@ namespace SkylineHOA.Controllers
             }
 
             users.Add(new User { FullName = FullName, Username = Username, Password = Password, Role = Role });
-            TempData["RegisterSuccess"] = "Account registered successfully! You can now log in.";
+            TempData["RegisterSuccess"] = $"{Role} registered successfully!";
             return Redirect("/");
         }
 
