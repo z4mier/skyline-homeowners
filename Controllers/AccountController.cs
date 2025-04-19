@@ -4,7 +4,7 @@ using SkylineHOA.Models;
 using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
-using System;
+using Microsoft.AspNetCore.Http;
 
 namespace SkylineHOA.Controllers
 {
@@ -18,7 +18,7 @@ namespace SkylineHOA.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(string Username, string Email, string Password, string ConfirmPassword)
+        public IActionResult Register(string FirstName, string LastName, string Username, string Email, string Password, string ConfirmPassword)
         {
             if (Password != ConfirmPassword)
             {
@@ -34,6 +34,8 @@ namespace SkylineHOA.Controllers
 
             var user = new User
             {
+                FirstName = FirstName,
+                LastName = LastName,
                 Username = Username,
                 Email = Email,
                 PasswordHash = HashPassword(Password),
@@ -65,24 +67,93 @@ namespace SkylineHOA.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            HttpContext.Session.SetString("Username", user.Username);
+
             TempData["Success"] = $"Welcome, {user.Username}!";
-            return RedirectToAction("Dashboard", "Home"); 
+            return RedirectToAction("Dashboard", "Home");
         }
 
         [HttpPost]
         public IActionResult Logout()
         {
+            HttpContext.Session.Clear();
             TempData["Success"] = "You have logged out.";
             return RedirectToAction("Index", "Home");
         }
 
-
-
-        private string HashPassword(string password)
+        public IActionResult Profile()
         {
-            using var sha = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes(password);
-            var hash = sha.ComputeHash(bytes);
+            string currentUsername = HttpContext.Session.GetString("Username");
+
+            if (string.IsNullOrEmpty(currentUsername))
+            {
+                TempData["Error"] = "You are not logged in.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Username == currentUsername);
+
+            if (user == null)
+            {
+                TempData["Error"] = "User not found.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateProfile(User updatedUser, string NewUsername, string NewPassword, string CurrentPassword)
+        {
+            string currentUsername = HttpContext.Session.GetString("Username");
+
+            if (string.IsNullOrEmpty(currentUsername))
+            {
+                TempData["Error"] = "You are not logged in.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Username == currentUsername);
+
+            if (user == null)
+            {
+                TempData["Error"] = "User not found.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (!string.IsNullOrEmpty(CurrentPassword))
+            {
+                var hashed = HashPassword(CurrentPassword);
+                if (user.PasswordHash != hashed)
+                {
+                    TempData["Error"] = "Incorrect current password.";
+                    return RedirectToAction("Profile");
+                }
+            }
+
+            user.FirstName = updatedUser.FirstName;
+            user.LastName = updatedUser.LastName;
+            user.ContactNumber = updatedUser.ContactNumber;
+            user.Address = updatedUser.Address;
+
+            if (!string.IsNullOrEmpty(NewUsername))
+                user.Username = NewUsername;
+
+            if (!string.IsNullOrEmpty(NewPassword))
+                user.PasswordHash = HashPassword(NewPassword);
+
+            _context.SaveChanges();
+
+            if (!string.IsNullOrEmpty(NewUsername))
+                HttpContext.Session.SetString("Username", NewUsername);
+
+            TempData["Success"] = "Profile updated successfully!";
+            return RedirectToAction("Profile");
+        }
+
+        private static string HashPassword(string password)
+        {
+            var hash = SHA256.HashData(Encoding.UTF8.GetBytes(password));
             return Convert.ToBase64String(hash);
         }
     }

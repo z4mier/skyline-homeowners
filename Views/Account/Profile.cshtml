@@ -1,0 +1,156 @@
+﻿@model SkylineHOA.Models.User
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Profile";
+    var success = TempData["Success"] as string;
+    var error = TempData["Error"] as string;
+}
+
+<!DOCTYPE html>
+<html lang="en" data-success="@success" data-error="@error">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Skyline Homeowners Association</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f5;
+            padding-top: 100px;
+        }
+
+        .card {
+            border-radius: 12px;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            z-index: 1000;
+        }
+
+        .password-toggle-icon {
+            color: #6c757d;
+        }
+
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast-container"></div>
+
+    <div class="back-button">
+        <a href="/Home/Dashboard" class="btn btn-outline-dark">
+            <i class="bi bi-arrow-left-circle"></i> Back
+        </a>
+    </div>
+
+    <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">My Profile</h2>
+            <p>Manage your information</p>
+        </div>
+
+        <div class="d-flex justify-content-center">
+            <div class="card p-4 shadow-sm" style="max-width: 500px; width: 100%;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">User Information</h5>
+                    <button class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        <i class="bi bi-pencil-square"></i> Edit
+                    </button>
+                </div>
+                <p><strong>Full Name:</strong> @($"{Model.FirstName} {Model.LastName}")</p>
+                <p><strong>Username:</strong> @Model.Username</p>
+                <p><strong>Email:</strong> @Model.Email</p>
+                <p><strong>Contact Number:</strong> @Model.ContactNumber</p>
+                <p><strong>Address:</strong> @Model.Address</p>
+                <p><strong>Member Since:</strong> @Model.CreatedAt?.ToString("MMMM dd, yyyy")</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 rounded-4">
+                <form method="post" asp-action="UpdateProfile" asp-controller="Account">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title fw-semibold">Edit Profile</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body px-4 pb-4">
+                        <input type="hidden" name="Id" value="@Model.UserID" />
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                <input type="text" name="FirstName" class="form-control" value="@Model.FirstName" placeholder="Enter your first name" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" name="LastName" class="form-control" value="@Model.LastName" placeholder="Enter your last name" required />
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label">Contact Number</label>
+                                <input type="text" name="ContactNumber" class="form-control" value="@Model.ContactNumber" placeholder="Enter contact number" />
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label">Address</label>
+                                <input type="text" name="Address" class="form-control" value="@Model.Address" placeholder="Enter your address" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Current Username</label>
+                                <input type="text" name="Username" class="form-control" value="@Model.Username" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">New Username</label>
+                                <input type="text" name="NewUsername" class="form-control" placeholder="Enter new username" />
+                            </div>
+
+                            <div class="col-md-6 position-relative">
+                                <label class="form-label">Current Password</label>
+                                <input type="password" name="CurrentPassword" class="form-control" id="currentPass" placeholder="Enter current password" />
+                                <i class="bi bi-eye-fill password-toggle-icon position-absolute end-0 me-3" style="top: 55%; cursor: pointer;" onclick="togglePassword('currentPass', this)"></i>
+                            </div>
+
+                            <div class="col-md-6 position-relative">
+                                <label class="form-label">New Password</label>
+                                <input type="password" name="NewPassword" class="form-control" id="newPass" placeholder="Enter new password" />
+                                <i class="bi bi-eye-fill password-toggle-icon position-absolute end-0 me-3" style="top: 55%; cursor: pointer;" onclick="togglePassword('newPass', this)"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 px-4 pb-4">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-dark">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/site.js"></script> 
+</body>
+</html>

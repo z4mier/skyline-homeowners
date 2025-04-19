@@ -31,7 +31,6 @@
     }
 });
 
-// ✅ Register Form Validation
 function validateRegisterForm() {
     const form = document.getElementById("registerForm");
 
@@ -41,7 +40,7 @@ function validateRegisterForm() {
     const confirmPassword = form.querySelector('[name="ConfirmPassword"]').value.trim();
     const errorDiv = document.getElementById("registerError");
 
-    errorDiv.textContent = ""; // Clear previous message
+    errorDiv.textContent = ""; 
 
     if (!username || !email || !password || !confirmPassword) {
         errorDiv.textContent = "Please fill in all fields.";
@@ -62,8 +61,6 @@ function validateRegisterForm() {
     return true;
 }
 
-
-// ✅ Toggle Eye Visibility (Login & Register)
 function togglePassword(fieldId, icon) {
     const input = document.getElementById(fieldId);
     if (input.type === "password") {
