@@ -1,77 +1,89 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using SkylineHOA.Data;
+using SkylineHOA.Models;
+using System.Security.Cryptography;
+using System.Text;
 using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+using System;
 
 namespace SkylineHOA.Controllers
 {
     public class AccountController : Controller
     {
-        // This simulates a database. Replace with your actual DB logic
-        private static List<User> users = new List<User>();
+        private readonly ApplicationDbContext _context;
 
-        [HttpPost]
-        public async Task<IActionResult> Login(string Username, string Password, string Role)
+        public AccountController(ApplicationDbContext context)
         {
-            var user = users.FirstOrDefault(u => u.Username == Username && u.Password == Password && u.Role == Role);
-
-            if (user != null)
-            {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, Username),
-                    new Claim("FullName", user.FullName),
-                    new Claim(ClaimTypes.Role, Role)
-                };
-
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
-
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
-                TempData["LoginSuccess"] = $"{user.Role} logged in successfully!";
-                return RedirectToAction("Dashboard", "Home");
-            }
-
-            TempData["LoginError"] = "Invalid credentials.";
-            return Redirect("/");
+            _context = context;
         }
 
         [HttpPost]
-        public IActionResult Register(string FullName, string Username, string Password, string ConfirmPassword, string Role)
+        public IActionResult Register(string Username, string Email, string Password, string ConfirmPassword)
         {
             if (Password != ConfirmPassword)
             {
-                TempData["RegisterError"] = "Passwords do not match.";
-                return Redirect("/");
+                TempData["Error"] = "Passwords do not match.";
+                return RedirectToAction("Index", "Home");
             }
 
-            if (users.Any(u => u.Username == Username))
+            if (_context.Users.Any(u => u.Username == Username || u.Email == Email))
             {
-                TempData["RegisterError"] = "Username already exists.";
-                return Redirect("/");
+                TempData["Error"] = "Username or Email already exists.";
+                return RedirectToAction("Index", "Home");
             }
 
-            users.Add(new User { FullName = FullName, Username = Username, Password = Password, Role = Role });
-            TempData["RegisterSuccess"] = $"{Role} registered successfully!";
-            return Redirect("/");
+            var user = new User
+            {
+                Username = Username,
+                Email = Email,
+                PasswordHash = HashPassword(Password),
+                CreatedAt = DateTime.Now
+            };
+
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
+            TempData["Success"] = "Registered successfully!";
+            return RedirectToAction("Index", "Home");
         }
 
-        public async Task<IActionResult> Logout()
+        [HttpPost]
+        public IActionResult Login(string Username, string Password)
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return Redirect("/");
-        }
-    }
+            if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password))
+            {
+                TempData["Error"] = "Please enter both username and password.";
+                return RedirectToAction("Index", "Home");
+            }
 
-    public class User
-    {
-        public string FullName { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Role { get; set; }
+            var passwordHash = HashPassword(Password);
+            var user = _context.Users.FirstOrDefault(u => u.Username == Username && u.PasswordHash == passwordHash);
+
+            if (user == null)
+            {
+                TempData["Error"] = "Invalid username or password.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            TempData["Success"] = $"Welcome, {user.Username}!";
+            return RedirectToAction("Dashboard", "Home"); 
+        }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            TempData["Success"] = "You have logged out.";
+            return RedirectToAction("Index", "Home");
+        }
+
+
+
+        private string HashPassword(string password)
+        {
+            using var sha = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(password);
+            var hash = sha.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
+        }
     }
 }
