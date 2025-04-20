@@ -1,0 +1,68 @@
+﻿<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+
+<style>
+    .navbar {
+        width: 100%;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fff;
+        border-bottom: 1px solid #e0e0e0;
+        z-index: 1000;
+    }
+
+        .navbar .navbar-logo img {
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .navbar .nav-icons a {
+            color: inherit;
+            font-size: 1.4rem;
+            margin-left: 20px;
+            position: relative;
+            text-decoration: none;
+        }
+
+            .navbar .nav-icons a:hover {
+                color: #000;
+            }
+
+        .navbar .nav-icons .badge {
+            font-size: 0.6rem;
+            position: absolute;
+            top: -5px;
+            right: -10px;
+        }
+</style>
+
+<nav class="navbar">
+    <!-- Logo -->
+    <a href="/Home/Dashboard" class="navbar-logo">
+        <img src="~/images/sh.png" alt="Skyline Logo" />
+    </a>
+
+    <!-- Icons -->
+    <div class="nav-icons d-flex align-items-center">
+        <a href="#" title="Notifications">
+            <i class="bi bi-bell"></i>
+            <span class="badge bg-dark rounded-pill"></span>
+        </a>
+        <a href="@Url.Action("Profile", "Account")" title="My Profile">
+            <i class="bi bi-person-circle"></i>
+        </a>
+        <a href="#" onclick="event.preventDefault(); confirmLogoutPrompt();" title="Logout">
+            <i class="bi bi-box-arrow-right"></i>
+        </a>
+        <form id="logoutForm" method="post" action="/Account/Logout" class="d-none"></form>
+    </div>
+</nav>
+
+<script>
+    function confirmLogoutPrompt() {
+        if (confirm("Are you sure you want to log out?")) {
+            document.getElementById("logoutForm").submit();
+        }
+    }
+</script>

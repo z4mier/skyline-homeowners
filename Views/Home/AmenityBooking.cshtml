@@ -1,0 +1,142 @@
+﻿@{
+    ViewData["Title"] = "Amenity Booking";
+    ViewData["HideNavbar"] = true; // 👈 This hides the layout navbar
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_Navbar") <!-- 👈 This is your custom navbar -->
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f9f9f9;
+    }
+
+    .page-title {
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
+
+    .subtitle {
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: #222;
+    }
+
+    .amenity-card {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.2s ease;
+    }
+
+        .amenity-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .amenity-img {
+        height: 180px;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .tag {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #6c757d;
+        background-color: transparent;
+        padding: 4px 10px;
+        border-radius: 999px;
+        display: inline-block;
+        border: 1px solid #dee2e6;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="page-title">Amenity Booking</h1>
+            <p class="subtitle">Book Now!</p>
+        </div>
+        <div class="text-end">
+            <a href="@Url.Action("Dashboard", "Home")" class="btn btn-outline-dark">← Back</a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Clubhouse -->
+        <div class="col-md-4">
+            <div class="card amenity-card">
+                <img src="/images/amenities/clubhouse.jpg" class="amenity-img" alt="Clubhouse">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-1">Clubhouse</h5>
+                    <p class="card-text small mb-2 text-muted">Cost Range: ₱5,000 - ₱12,000/day</p>
+                    <span class="tag">Function Space</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Function Hall -->
+        <div class="col-md-4">
+            <div class="card amenity-card">
+                <img src="/images/amenities/functionhall.jpg" class="amenity-img" alt="Function Hall">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-1">Function Hall</h5>
+                    <p class="card-text small mb-2 text-muted">Cost Range: ₱4,000 - ₱10,000/day</p>
+                    <span class="tag">Events</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gym -->
+        <div class="col-md-4">
+            <div class="card amenity-card">
+                <img src="/images/amenities/gym.jpg" class="amenity-img" alt="Gym">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-1">Gym</h5>
+                    <p class="card-text small mb-2 text-muted">Cost Range: ₱500/day</p>
+                    <span class="tag">Fitness</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patio -->
+        <div class="col-md-4">
+            <div class="card amenity-card">
+                <img src="/images/amenities/patio.jpg" class="amenity-img" alt="Patio">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-1">Patio</h5>
+                    <p class="card-text small mb-2 text-muted">Cost Range: ₱1,000 - ₱3,000/day</p>
+                    <span class="tag">Outdoor</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indoor Playroom -->
+        <div class="col-md-4">
+            <div class="card amenity-card">
+                <img src="/images/amenities/playroom.jpg" class="amenity-img" alt="Indoor Playroom">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-1">Indoor Playroom</h5>
+                    <p class="card-text small mb-2 text-muted">Cost Range: ₱500 - ₱1,500/day</p>
+                    <span class="tag">Kids</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pool -->
+        <div class="col-md-4">
+            <div class="card amenity-card">
+                <img src="/images/amenities/swimmingpool.jpg" class="amenity-img" alt="Pool">
+                <div class="card-body">
+                    <h5 class="card-title fw-semibold mb-1">Pool</h5>
+                    <p class="card-text small mb-2 text-muted">Cost Range: ₱3,000 - ₱8,000/day</p>
+                    <span class="tag">Recreation</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
