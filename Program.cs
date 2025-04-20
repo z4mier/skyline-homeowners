@@ -12,10 +12,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/";
+        options.LoginPath = "/"; 
         options.LogoutPath = "/Account/Logout";
         options.ExpireTimeSpan = TimeSpan.FromHours(1);
         options.SlidingExpiration = true;
+        options.AccessDeniedPath = "/AccessDenied";
     });
 
 builder.Services.AddSession(options =>
@@ -38,9 +39,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseSession();
-
-app.UseAuthentication();
+app.UseSession();         
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllerRoute(

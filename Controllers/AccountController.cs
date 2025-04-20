@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using SkylineHOA.Data;
 using SkylineHOA.Models;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Linq;
 using Microsoft.AspNetCore.Http;
 
 namespace SkylineHOA.Controllers
@@ -50,7 +52,7 @@ namespace SkylineHOA.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(string Username, string Password)
+        public async Task<IActionResult> Login(string Username, string Password)
         {
             if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password))
             {
@@ -67,23 +69,31 @@ namespace SkylineHOA.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            HttpContext.Session.SetString("Username", user.Username);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim("FullName", $"{user.FirstName} {user.LastName}")
+            };
 
-            TempData["Success"] = $"Welcome, {user.Username}!";
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
             return RedirectToAction("Dashboard", "Home");
         }
 
         [HttpPost]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             TempData["Success"] = "You have logged out.";
             return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Profile()
         {
-            string currentUsername = HttpContext.Session.GetString("Username");
+            string currentUsername = User.Identity?.Name;
 
             if (string.IsNullOrEmpty(currentUsername))
             {
@@ -105,7 +115,7 @@ namespace SkylineHOA.Controllers
         [HttpPost]
         public IActionResult UpdateProfile(User updatedUser, string NewUsername, string NewPassword, string CurrentPassword)
         {
-            string currentUsername = HttpContext.Session.GetString("Username");
+            string currentUsername = User.Identity?.Name;
 
             if (string.IsNullOrEmpty(currentUsername))
             {
@@ -143,9 +153,6 @@ namespace SkylineHOA.Controllers
                 user.PasswordHash = HashPassword(NewPassword);
 
             _context.SaveChanges();
-
-            if (!string.IsNullOrEmpty(NewUsername))
-                HttpContext.Session.SetString("Username", NewUsername);
 
             TempData["Success"] = "Profile updated successfully!";
             return RedirectToAction("Profile");

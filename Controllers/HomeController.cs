@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SkylineHOA.Models;
 
@@ -27,10 +28,12 @@ namespace SkylineHOA.Controllers
         {
             return View();
         }
+        [Authorize]
         public IActionResult AmenityBooking()
         {
             return View();
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
