@@ -33,6 +33,15 @@ namespace SkylineHOA.Controllers
         {
             return View();
         }
+        public IActionResult FormsAndContacts()
+        {
+            return View();
+        }
+        public IActionResult ViewContacts()
+        {
+            return View();
+        }
+
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

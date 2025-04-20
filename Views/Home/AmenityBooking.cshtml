@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Amenity Booking";
     ViewData["HideNavbar"] = true;
+    ViewData["HideFooter"] = true;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -413,6 +414,7 @@
             const paymentModalEl = document.getElementById("paymentModal");
             const paymentModal = bootstrap.Modal.getInstance(paymentModalEl);
             paymentModal.hide();
+
 
             const confirmationModal = new bootstrap.Modal(document.getElementById("confirmationModal"));
             confirmationModal.show();
