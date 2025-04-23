@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Staff Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Welcome, Staff</h1>
+<p>You are now viewing the Staff dashboard.</p>
+@if (TempData["DebugRole"] != null)
+{
+    <p>@TempData["DebugRole"]</p>
+}

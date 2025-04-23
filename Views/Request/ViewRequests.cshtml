@@ -1,0 +1,173 @@
+﻿@model IEnumerable<SkylineHOA.Models.Request>
+
+@{
+    ViewData["Title"] = "My Requests";
+    ViewData["HideNavbar"] = true;
+    ViewData["HideFooter"] = true;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_Navbar")
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f9f9f9;
+    }
+
+    .page-title {
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+    }
+
+    .feature-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+        .feature-buttons a {
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 1px solid #000;
+            color: #000;
+            transition: all 0.2s ease;
+        }
+
+            .feature-buttons a:hover {
+                background-color: #f0f0f0;
+            }
+
+    .search-bar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+        .search-bar input, .search-bar select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            width: 200px;
+        }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #eee;
+            color: #000;
+        }
+
+    .badge {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border: 1px solid #aaa;
+        background: transparent;
+        color: #000;
+    }
+
+    .pagination .page-link {
+        color: #000;
+    }
+
+    .pagination .active .page-link {
+        background-color: #000;
+        color: #fff;
+        border-color: #000;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="feature-buttons">
+        <h1 class="page-title mb-0">My Requests</h1>
+        <a href="@Url.Action("FormsAndContacts", "Home")">← Back</a>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" placeholder="Search requests..." disabled />
+        <select disabled>
+            <option>All Types</option>
+            <option>Maintenance</option>
+            <option>Gate Pass</option>
+            <option>Lost & Found</option>
+            <option>Complaint</option>
+            <option>Feedback</option>
+        </select>
+        <select disabled>
+            <option>All Statuses</option>
+            <option>Pending</option>
+            <option>Approved</option>
+            <option>Resolved</option>
+            <option>In Progress</option>
+            <option>Under Review</option>
+            <option>Scheduled</option>
+        </select>
+    </div>
+
+    <!-- Requests Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Urgency</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var req in Model)
+                {
+                    <tr>
+                        <td>@req.RequestId</td>
+                        <td>@req.RequestType ?? "-"</td>
+                        <td>@req.Title ?? "-"</td>
+                        <td><span class="badge">@req.Status ?? "Pending"</span></td>
+                        <td>@(req.DateSubmitted.ToString("yyyy-MM-dd"))</td>
+                        <td>@req.Urgency ?? "Normal"</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No requests found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center mt-3">
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item disabled"><a class="page-link" href="#">‹ Previous</a></li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next ›</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>

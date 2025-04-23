@@ -22,5 +22,7 @@ namespace SkylineHOA.Models
         public string? Address { get; set; }
 
         public DateTime? CreatedAt { get; set; }
+
+        public string? Role { get; set; }
     }
 }
