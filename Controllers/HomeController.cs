@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SkylineHOA.Models;
 using SkylineHOA.Data;
-using System.Linq;
 using System.Security.Claims;
+using System.Linq;
 
 namespace SkylineHOA.Controllers
 {
@@ -29,8 +29,17 @@ namespace SkylineHOA.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult Dashboard()
         {
+            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (role == "Admin")
+                return RedirectToAction("AdminDashboard");
+
+            if (role == "Staff")
+                return RedirectToAction("StaffDashboard");
+
             return View();
         }
 
@@ -40,39 +49,57 @@ namespace SkylineHOA.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult FormsAndContacts()
         {
             return View();
         }
 
+        [Authorize]
         public IActionResult ViewContacts()
         {
             return View();
         }
 
-        // ✅ Admin Dashboard
         [Authorize]
-        public IActionResult AdminDashboard()
+        public IActionResult Announcements()
         {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            if (role != "Admin")
-                return RedirectToAction("Dashboard");
+            string userRole = User.IsInRole("Staff") ? "Staff" : "Residents";
 
-            return View(); // Views/Home/AdminDashboard.cshtml
-        }
+            var announcements = _context.Announcements
+                .Where(a => a.Target == userRole || a.Target == "Both")
+                .OrderByDescending(a => a.CreatedAt)
+                .ToList();
 
-        [Authorize]
-        public IActionResult StaffDashboard()
-        {
-            var role = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
-            // ⬇️ Temporary debug line
-            TempData["DebugRole"] = $"Logged in as role: {role}";
-
-            if (role != "Staff")
-                return RedirectToAction("Dashboard");
+            ViewBag.Announcements = announcements;
+            ViewBag.UserRole = userRole;
 
             return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult AdminDashboard()
+        {
+            var announcements = _context.Announcements
+                .OrderByDescending(a => a.CreatedAt)
+                .Take(10)
+                .ToList();
+
+            // Count based on role stored in Users table
+            var totalResidents = _context.Users.Count(u => u.Role == "Resident");
+            var totalStaffs = _context.Users.Count(u => u.Role == "Staff");
+
+            ViewBag.Announcements = announcements;
+            ViewBag.TotalResidents = totalResidents;
+            ViewBag.TotalStaffs = totalStaffs;
+
+            return View("~/Views/Admin/AdminDashboard.cshtml");
+        }
+
+        [Authorize(Roles = "Staff")]
+        public IActionResult StaffDashboard()
+        {
+            return View("~/Views/Staff/StaffDashboard.cshtml");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

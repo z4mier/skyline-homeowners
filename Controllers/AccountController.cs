@@ -34,10 +34,9 @@ namespace SkylineHOA.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // Optional: restrict roles only to known types
             if (string.IsNullOrEmpty(Role) || !(new[] { "Admin", "Staff", "User" }.Contains(Role)))
             {
-                Role = "User"; // fallback
+                Role = "User";
             }
 
             var user = new User
@@ -76,12 +75,11 @@ namespace SkylineHOA.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // Create Claims
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim("FullName", $"{user.FirstName} {user.LastName}"),
-                new Claim("UserID", user.UserID.ToString()), // ✅ exact case match
+                new Claim("UserID", user.UserID.ToString()),
                 new Claim(ClaimTypes.Role, user.Role ?? "User")
             };
 
@@ -90,13 +88,12 @@ namespace SkylineHOA.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            // 🔁 Role-based redirection
             return user.Role switch
             {
                 "Admin" => RedirectToAction("AdminDashboard", "Home"),
                 "Staff" => RedirectToAction("StaffDashboard", "Home"),
                 "User" => RedirectToAction("Dashboard", "Home"),
-                _ => RedirectToAction("Dashboard", "Home") // fallback
+                _ => RedirectToAction("Dashboard", "Home")
             };
         }
 
@@ -128,6 +125,7 @@ namespace SkylineHOA.Controllers
 
             return View(user);
         }
+
         [HttpGet]
         public IActionResult GenerateHash(string password = "admin123")
         {
@@ -139,7 +137,6 @@ namespace SkylineHOA.Controllers
             string hashed = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(password)));
             return Content($"Plain: {password}\nHashed: {hashed}");
         }
-
 
         [HttpPost]
         public IActionResult UpdateProfile(User updatedUser, string NewUsername, string NewPassword, string CurrentPassword)
@@ -187,7 +184,6 @@ namespace SkylineHOA.Controllers
             return RedirectToAction("Profile");
         }
 
-        // ✅ SHA256 password hashing
         private static string HashPassword(string password)
         {
             var hash = SHA256.HashData(Encoding.UTF8.GetBytes(password));
