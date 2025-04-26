@@ -6,7 +6,7 @@
 
     var announcements = ViewBag.Announcements as List<Announcement>;
     string userRole = ViewBag.UserRole as string ?? "Residents";
-    string sort = Context.Request.Query["sortOrder"]; // fixed: use 'sortOrder' to match the select name
+    string sort = Context.Request.Query["sortOrder"]; 
 }
 
 @Html.Partial("_Navbar")
@@ -48,7 +48,7 @@
                         <div class="bg-white border border-dark rounded-4 p-4 shadow-sm h-100 d-flex flex-column justify-content-between">
                             <div class="mb-3">
                                 <h5 class="fw-bold mb-2">@ann.Title</h5>
-                                <p class="mb-0 text-muted" style="font-size: 0.95rem;">@ann.Message</p> <!-- optional font size -->
+                                <p class="mb-0 text-muted" style="font-size: 0.95rem;">@ann.Message</p> 
                             </div>
                             <div class="text-end">
                                 <small class="text-secondary">Admin | @ann.CreatedAt.ToString("dd/MM/yyyy hh:mm tt")</small>

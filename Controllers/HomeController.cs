@@ -85,7 +85,6 @@ namespace SkylineHOA.Controllers
                 .Take(10)
                 .ToList();
 
-            // Count based on role stored in Users table
             var totalResidents = _context.Users.Count(u => u.Role == "Resident");
             var totalStaffs = _context.Users.Count(u => u.Role == "Staff");
 
@@ -100,6 +99,21 @@ namespace SkylineHOA.Controllers
         public IActionResult StaffDashboard()
         {
             return View("~/Views/Staff/StaffDashboard.cshtml");
+        }
+
+        [Authorize]
+        public IActionResult UserEventCalendar(int? month, int? year)
+        {
+            int selectedMonth = month ?? DateTime.Now.Month;
+            int selectedYear = year ?? DateTime.Now.Year;
+
+            var allEvents = _context.Events.ToList();
+
+            ViewBag.Events = allEvents;
+            ViewBag.Month = selectedMonth;
+            ViewBag.Year = selectedYear;
+
+            return View("~/Views/Home/UserEventCalendar.cshtml");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

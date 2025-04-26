@@ -13,6 +13,7 @@ namespace SkylineHOA.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<Announcement> Announcements { get; set; }
+        public DbSet<Event> Events { get; set; }
 
 
     }
