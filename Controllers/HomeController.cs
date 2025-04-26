@@ -50,7 +50,7 @@ namespace SkylineHOA.Controllers
         }
 
         [Authorize]
-        public IActionResult FormsAndContacts()
+        public IActionResult FormsAndRequests()
         {
             return View();
         }
@@ -60,6 +60,11 @@ namespace SkylineHOA.Controllers
         {
             return View();
         }
+        public IActionResult ViewForms()
+        {
+            return View();
+        }
+
 
         [Authorize]
         public IActionResult Announcements()

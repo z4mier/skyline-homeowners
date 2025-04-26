@@ -22,7 +22,7 @@ namespace SkylineHOA.Controllers
         [HttpGet]
         public IActionResult ViewRequests()
         {
-            var userIdClaim = User.FindFirst("UserID"); // ✅ Must match the claim name used in Login
+            var userIdClaim = User.FindFirst("UserID");
             if (userIdClaim == null)
                 return Unauthorized();
 
@@ -55,7 +55,7 @@ namespace SkylineHOA.Controllers
             if (ModelState.IsValid)
             {
                 model.UserId = userId;
-                model.RequestId = Guid.NewGuid().ToString(); // if varchar PK
+                model.RequestId = Guid.NewGuid().ToString();
                 model.DateSubmitted = DateTime.Now;
                 model.Status = "Pending";
                 model.DateUpdated = null;
