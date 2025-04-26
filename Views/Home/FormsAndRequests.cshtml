@@ -1,0 +1,706 @@
+﻿@{
+    ViewData["Title"] = "Forms & Requests";
+    ViewData["HideNavbar"] = true;
+    ViewData["HideFooter"] = true;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_Navbar")
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Fo3rlrZj/kTcXn6Nw6y9M5n0TJLKeRbKfa4vZxD+OjL3qF0TBBbX+XPoZJLxNfK+Kc2kE6pbH6YMB6dfL3XTmQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f9f9f9;
+    }
+
+    .page-title {
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #222;
+    }
+
+    .feature-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+
+        .feature-buttons a {
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 1px solid #000;
+            color: #000;
+            transition: all 0.2s ease;
+        }
+
+        .feature-buttons a:hover {
+                background-color: #f0f0f0;
+            }
+
+    .form-section {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .form-info h5 {
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .form-info p {
+        font-size: 0.85rem;
+        color: #666;
+        margin: 0;
+    }
+
+    .btn-create {
+        background-color: #000;
+        color: #fff;
+        font-weight: 500;
+        border: 1px solid #000;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-black-outline {
+        background-color: #fff;
+        color: #000;
+        border: 1px solid #000;
+        border-radius: 8px;
+        padding: 6px 16px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .lost-found-toggle {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .tab-button {
+        font-weight: 500;
+        font-size: 0.9rem;
+        padding: 8px 20px;
+        border-radius: 12px;
+        text-decoration: none;
+        border: 1px solid #000;
+        background-color: #fff;
+        color: #000;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+     .tab-button.active {
+            background-color: #000;
+            color: #fff;
+        }
+
+    .complaint-label {
+        font-size: 0.9rem;
+        font-weight: 400;
+        line-height: 1.2;
+    }
+
+    .complaint-other-input {
+        width: 100%;
+        max-width: 180px;
+        font-size: 0.85rem;
+        padding: 4px 8px;
+    }
+
+    .feedback-satisfaction label {
+        font-size: 0.85rem;
+        font-weight: 400;
+    }
+
+</style>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="page-title">Forms & Requests</h1>
+            <p class="subtitle">Access downloadable forms and submit service requests.</p>
+        </div>
+        <div class="text-end">
+            <a href="@Url.Action("Dashboard", "Home")" class="btn btn-outline-dark">← Back</a>
+        </div>
+    </div>
+
+    <div class="feature-buttons mb-4">
+        <a href="@Url.Action("ViewForms", "Home")" class="btn-toggle">View Downloadable Forms</a>
+        <a href="@Url.Action("ViewRequests", "Request")">View Requests</a>
+    </div>
+
+
+    <!-- Maintenance Modal Trigger -->
+    <div class="form-section">
+        <div class="form-info">
+            <h5>Maintenance Request</h5>
+            <p>Report issues with plumbing, electrical, or general maintenance</p>
+        </div>
+        <button class="btn-create" data-bs-toggle="modal" data-bs-target="#maintenanceModal">+ Create</button>
+    </div>
+
+    <!-- Maintenance Modal -->
+    <div class="modal fade" id="maintenanceModal" tabindex="-1" aria-labelledby="maintenanceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content p-4">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="maintenanceModalLabel">Maintenance Request</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Date:</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Name:</label>
+                                <input type="text" class="form-control" placeholder="Full name" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Unit Number/Address:</label>
+                                <input type="text" class="form-control" placeholder="e.g. Lot 11, Block B, Horizon St." required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Contact Number:</label>
+                                <input type="text" class="form-control" placeholder="+63 000 000 0000" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email:</label>
+                            <input type="email" class="form-control" placeholder="email@example.com" required>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Request Type:</label>
+                                <select class="form-select" required>
+                                    <option selected disabled>Select type</option>
+                                    <option>Plumbing</option>
+                                    <option>Electrical</option>
+                                    <option>General</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Urgency Level:</label>
+                                <select class="form-select" required>
+                                    <option selected disabled>Select urgency</option>
+                                    <option>Low</option>
+                                    <option>Medium</option>
+                                    <option>High</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Preferred Service Date:</label>
+                                <input type="date" class="form-control">
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Preferred Service Time:</label>
+                                <input type="time" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description of Issue:</label>
+                            <textarea class="form-control" rows="3" placeholder="Please describe the issue in detail"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-0 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-black-outline">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gate Pass Modal Trigger -->
+    <div class="form-section">
+        <div class="form-info">
+            <h5>Gate Pass</h5>
+            <p>Request visitor access or moving permissions</p>
+        </div>
+        <button class="btn-create" data-bs-toggle="modal" data-bs-target="#gatePassModal">+ Create</button>
+    </div>
+
+    <!-- Gate Pass Modal -->
+    <div class="modal fade" id="gatePassModal" tabindex="-1" aria-labelledby="gatePassModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content p-4">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="gatePassModalLabel">Gate Pass Form</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form id="gatePassForm">
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Date:</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Expected Duration:</label>
+                                <input type="text" class="form-control" placeholder="e.g. 2 hours" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Visitor Name:</label>
+                                <input type="text" class="form-control" placeholder="Full name" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Contact Number:</label>
+                                <input type="text" class="form-control" placeholder="+63 000 000 0000" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email:</label>
+                            <input type="email" class="form-control" placeholder="email@example.com" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Address:</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Purpose of Visit:</label>
+                            <textarea class="form-control" rows="2" placeholder="Brief description of visit purpose" required></textarea>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="hasVehicle">
+                            <label class="form-check-label" for="hasVehicle">Have vehicle?</label>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Resident’s Name:</label>
+                                <input type="text" class="form-control" placeholder="Full name" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Unit Number/Address:</label>
+                                <input type="text" class="form-control" placeholder="e.g. Lot 11, Block B, Horizon St." required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-0 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-black-outline">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lost & Found Modal Trigger -->
+    <div class="form-section">
+        <div class="form-info">
+            <h5>Lost & Found</h5>
+            <p>Report lost items or submit found items</p>
+        </div>
+        <div>
+            <button class="btn-create me-2" data-bs-toggle="modal" data-bs-target="#lostModal">+ Report Lost</button>
+            <button class="btn-create" data-bs-toggle="modal" data-bs-target="#foundModal">+ Report Found</button>
+        </div>
+    </div>
+    <!-- Lost Item Modal -->
+    <div class="modal fade" id="lostModal" tabindex="-1" aria-labelledby="lostModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content p-4">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="lostModalLabel">Lost Item Report</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form id="lostForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Today's Date:</label>
+                            <input type="date" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description of Item Lost:</label>
+                            <textarea class="form-control" rows="3" placeholder="e.g. black wallet with student ID and cash" required></textarea>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Date Lost:</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Time Lost:</label>
+                                <input type="time" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Location where the item was lost:</label>
+                            <input type="text" class="form-control" placeholder="e.g. Basement Parking, Zone B" required>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Owner's Name:</label>
+                                <input type="text" class="form-control" placeholder="Your full name" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Contact Number:</label>
+                                <input type="text" class="form-control" placeholder="+63 912 345 6789" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Upload image (optional):</label>
+                            <input class="form-control" type="file" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-0 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-black-outline">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Found Item Modal -->
+    <div class="modal fade" id="foundModal" tabindex="-1" aria-labelledby="foundModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content p-4">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="foundModalLabel">Found Item Submission</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form id="foundForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Today's Date:</label>
+                            <input type="date" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description of Item Found:</label>
+                            <textarea class="form-control" rows="3" placeholder="e.g. silver ring with initials 'RJ'" required></textarea>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Date Found:</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Time Found:</label>
+                                <input type="time" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Location where the item was found:</label>
+                            <input type="text" class="form-control" placeholder="e.g. Lounge area beside elevator" required>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Item Found By:</label>
+                                <input type="text" class="form-control" placeholder="Your name or staff name" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Contact Number:</label>
+                                <input type="text" class="form-control" placeholder="+63 912 345 6789" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Upload image (optional):</label>
+                            <input class="form-control" type="file" accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-0 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-black-outline">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Complaint Modal Trigger -->
+    <div class="form-section">
+        <div class="form-info">
+            <h5>Complaint</h5>
+            <p>Submit formal complaints about facilities or neighbors</p>
+        </div>
+        <button class="btn-create" data-bs-toggle="modal" data-bs-target="#complaintModal">+ Create</button>
+    </div>
+
+    <!-- Complaint Modal -->
+    <div class="modal fade" id="complaintModal" tabindex="-1" aria-labelledby="complaintModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content p-4">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="complaintModalLabel">Complaint Form</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form id="complaintForm">
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Date:</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Name of Complainant:</label>
+                                <input type="text" class="form-control" placeholder="Full name" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Contact Number:</label>
+                                <input type="text" class="form-control" placeholder="+63 000 000 0000" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Unit Number/Address:</label>
+                                <input type="text" class="form-control" placeholder="e.g. Lot 11, Block B, Horizon St." required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email:</label>
+                            <input type="email" class="form-control" placeholder="email@example.com" required>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Name of Complainee:</label>
+                                <input type="text" class="form-control" placeholder="Full name" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Unit Number/Address:</label>
+                                <input type="text" class="form-control" placeholder="e.g. Lot 11, Block B, Horizon St." required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Type of Complaint:</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="noise">
+                                        <label class="form-check-label complaint-label" for="noise">Noise Disturbance (against neighbor)</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="harassment">
+                                        <label class="form-check-label complaint-label" for="harassment">Harassment or intimidation (against neighbor)</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="disrespect">
+                                        <label class="form-check-label complaint-label" for="disrespect">Disrespectful behavior (staff being rude)</label>
+                                    </div>
+                                    <div class="form-check d-flex align-items-center gap-2">
+                                        <input type="checkbox" class="form-check-input" id="other">
+                                        <label class="form-check-label complaint-label" for="other">Other:</label>
+                                        <input type="text" class="form-control form-control-sm complaint-other-input" placeholder="Please specify">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label class="form-label">Complaint Description:</label>
+                            <textarea class="form-control" rows="3" placeholder="Please provide as much detail as possible" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-0 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-black-outline">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal Trigger -->
+    <div class="form-section">
+        <div class="form-info">
+            <h5>Feedback</h5>
+            <p>Provide suggestions or feedback about community services</p>
+        </div>
+        <button class="btn-create" data-bs-toggle="modal" data-bs-target="#feedbackModal">+ Create</button>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content p-4">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="feedbackModalLabel">Feedback Form</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form id="feedbackForm">
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Name:</label>
+                                <input type="text" class="form-control" placeholder="Full name" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Contact Information:</label>
+                                <input type="text" class="form-control" placeholder="email/contact number" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">What would you like to provide feedback on?</label><br>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="feedback1">
+                                    <label class="form-check-label small" for="feedback1">Community services</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="feedback2">
+                                    <label class="form-check-label small" for="feedback2">Facilities (e.g. clubhouse, pool, etc.)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="feedback3">
+                                    <label class="form-check-label small" for="feedback3">Security</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="feedback4">
+                                    <label class="form-check-label small" for="feedback4">Maintenance</label>
+                                </div>
+                                <div class="form-check d-flex align-items-center mt-2">
+                                    <input class="form-check-input me-1" type="checkbox" id="feedbackOther">
+                                    <label class="form-check-label me-2 small" for="feedbackOther">Other:</label>
+                                    <input type="text" class="form-control form-control-sm" style="max-width: 180px;" placeholder="Please specify">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">How satisfied are you?</label><br>
+                                <div class="feedback-satisfaction">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="satisfaction" id="s5" required>
+                                        <label class="form-check-label small" for="s5">5 - Very Satisfied: Excellent, exceed expectations.</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="satisfaction" id="s4">
+                                        <label class="form-check-label small" for="s4">4 - Satisfied: Good, met expectations.</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="satisfaction" id="s3">
+                                        <label class="form-check-label small" for="s3">3 - Neutral: Acceptable, but could improve.</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="satisfaction" id="s2">
+                                        <label class="form-check-label small" for="s2">2 - Dissatisfied: Poor, below expectations.</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="satisfaction" id="s1">
+                                        <label class="form-check-label small" for="s1">1 - Very Dissatisfied: Very poor, far below expectations.</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Comments or Suggestions:</label>
+                            <textarea class="form-control" rows="3" placeholder="Enter comments or suggestions"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer border-0 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-black-outline">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+<!-- Success Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+        <div class="modal-content p-4 text-center border-0">
+            <div class="modal-body">
+                <h5 class="fw-bold mb-2">Thank You !</h5>
+                <p class="mb-4">
+                    Your request has been successfully submitted. We’re currently reviewing it and will take the necessary steps to address the issue.
+                </p>
+                <button class="btn btn-dark px-4 py-2 rounded-pill" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modalFormMap = {
+                maintenanceModal: "form",
+                gatePassModal: "form",
+                lostModal: "#lostForm",
+                foundModal: "#foundForm",
+                complaintModal: "#complaintForm",
+                feedbackModal: "#feedbackForm"
+            };
+
+            const confirmationModal = new bootstrap.Modal(document.getElementById("confirmationModal"));
+
+            Object.entries(modalFormMap).forEach(([modalId, formSelector]) => {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    const form = modal.querySelector(formSelector);
+                    if (form) {
+                        form.addEventListener("submit", function (e) {
+                            e.preventDefault();
+                            const modalInstance = bootstrap.Modal.getInstance(modal);
+                            if (modalInstance) modalInstance.hide();
+                            confirmationModal.show();
+                        });
+                    }
+                }
+            });
+    </script>
+
