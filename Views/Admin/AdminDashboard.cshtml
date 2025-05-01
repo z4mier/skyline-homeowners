@@ -64,15 +64,18 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="quick-card border border-dark rounded p-4">
-                <h5 class="fw-bold">Service Requests</h5>
-                <hr />
-                <p><strong>Pending Requests</strong> <span class="float-end fw-semibold">0</span></p>
-                <p><strong>Approved Requests</strong> <span class="float-end fw-semibold">0</span></p>
-                <p><strong>Denied Requests</strong> <span class="float-end fw-semibold">0</span></p>
-            </div>
+            <a href="/Admin/ServiceRequests" class="text-decoration-none text-dark">
+                <div class="quick-card border border-dark rounded p-4">
+                    <h5 class="fw-bold">Service Requests</h5>
+                    <hr />
+                    <p><strong>Pending Requests</strong> <span class="float-end fw-semibold">@ViewBag.PendingRequests</span></p>
+                    <p><strong>Approved Requests</strong> <span class="float-end fw-semibold">@ViewBag.ApprovedRequests</span></p>
+                    <p><strong>Denied Requests</strong> <span class="float-end fw-semibold">@ViewBag.DeniedRequests</span></p>
+                </div>
+            </a>
         </div>
     </div>
+
 
     <!-- Announcements -->
     <div class="border border-dark rounded p-4 mb-5">

@@ -22,5 +22,7 @@ namespace SkylineHOA.Models
         public string Status { get; set; } = "Pending";
 
         public DateTime DateSubmitted { get; set; } = DateTime.Now;
+        public string? ApprovedBy { get; set; }
+
     }
 }

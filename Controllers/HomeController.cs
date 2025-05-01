@@ -93,12 +93,18 @@ namespace SkylineHOA.Controllers
             var totalResidents = _context.Users.Count(u => u.Role == "Resident");
             var totalStaffs = _context.Users.Count(u => u.Role == "Staff");
 
+            // Count service requests by status
+            ViewBag.PendingRequests = _context.Requests.Count(r => r.Status == "Pending");
+            ViewBag.ApprovedRequests = _context.Requests.Count(r => r.Status == "Approved");
+            ViewBag.DeniedRequests = _context.Requests.Count(r => r.Status == "Denied");
+
             ViewBag.Announcements = announcements;
             ViewBag.TotalResidents = totalResidents;
             ViewBag.TotalStaffs = totalStaffs;
 
             return View("~/Views/Admin/AdminDashboard.cshtml");
         }
+
 
         [Authorize(Roles = "Staff")]
         public IActionResult StaffDashboard()

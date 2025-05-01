@@ -39,10 +39,12 @@
             border: 1px solid #000;
             color: #000;
             transition: all 0.2s ease;
+            background-color: transparent;
         }
 
             .feature-buttons a:hover {
-                background-color: #f0f0f0;
+                background-color: #000;
+                color: #fff;
             }
 
     .search-bar {
@@ -106,7 +108,7 @@
     </div>
 
     <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search requests...">
+        <input type="text" id="searchInput" placeholder="Search type...">
         <select id="typeFilter">
             <option value="">All Types</option>
             <option>Maintenance Request</option>
@@ -132,30 +134,27 @@
             <tr>
                 <th>ID</th>
                 <th>Type</th>
-                <th>Title</th>
                 <th>Status</th>
                 <th>Date</th>
-                <th>Urgency</th>
             </tr>
         </thead>
         <tbody>
             @if (Model != null && Model.Any())
             {
-                foreach (var req in Model)
+                int index = 0;
+                foreach (var req in Model.OrderBy(r => r.RequestId))
                 {
                     <tr class="request-row">
-                        <td>@req.RequestId</td>
+                        <td>@(++index)</td>
                         <td class="type">@(req.RequestType ?? "-")</td>
-                        <td class="title">@(req.Title ?? "-")</td>
                         <td class="status"><span class="badge">@(req.Status ?? "Pending")</span></td>
                         <td>@req.DateSubmitted.ToString("yyyy-MM-dd")</td>
-                        <td>@(req.Urgency ?? "Normal")</td>
                     </tr>
                 }
             }
             else
             {
-                <tr><td colspan="6" class="text-center">No requests found.</td></tr>
+                <tr><td colspan="4" class="text-center">No requests found.</td></tr>
             }
         </tbody>
     </table>
@@ -186,11 +185,10 @@
             const status = statusFilter.value.toLowerCase();
 
             rows.forEach(row => {
-                const title = row.querySelector(".title")?.textContent.toLowerCase();
                 const typeVal = row.querySelector(".type")?.textContent.toLowerCase();
                 const statusVal = row.querySelector(".status")?.textContent.toLowerCase();
 
-                const matchesSearch = !search || title.includes(search);
+                const matchesSearch = !search || typeVal.includes(search);
                 const matchesType = !type || typeVal === type;
                 const matchesStatus = !status || statusVal.includes(status);
 
