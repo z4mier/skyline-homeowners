@@ -82,12 +82,22 @@
 
     .badge {
         padding: 4px 12px;
-        border-radius: 12px;
+        border-radius: 999px;
         font-size: 0.75rem;
         font-weight: 500;
         border: 1px solid #aaa;
         background: transparent;
         color: #000;
+    }
+
+    .badge-approved {
+        color: #198754;
+        border-color: #198754;
+    }
+
+    .badge-denied {
+        color: #dc3545;
+        border-color: #dc3545;
     }
 
     .pagination .page-link {
@@ -122,10 +132,7 @@
             <option value="">All Statuses</option>
             <option>Pending</option>
             <option>Approved</option>
-            <option>Resolved</option>
-            <option>In Progress</option>
-            <option>Under Review</option>
-            <option>Scheduled</option>
+            <option>Denied</option>
         </select>
     </div>
 
@@ -144,10 +151,16 @@
                 int index = 0;
                 foreach (var req in Model.OrderBy(r => r.RequestId))
                 {
+                    var statusClass = req.Status switch
+                    {
+                        "Approved" => "badge badge-approved",
+                        "Denied" => "badge badge-denied",
+                        _ => "badge"
+                    };
                     <tr class="request-row">
                         <td>@(++index)</td>
                         <td class="type">@(req.RequestType ?? "-")</td>
-                        <td class="status"><span class="badge">@(req.Status ?? "Pending")</span></td>
+                        <td class="status"><span class="@statusClass">@(req.Status ?? "Pending")</span></td>
                         <td>@req.DateSubmitted.ToString("yyyy-MM-dd")</td>
                     </tr>
                 }
