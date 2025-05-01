@@ -1,10 +1,12 @@
 ﻿@model IEnumerable<SkylineHOA.Models.Request>
-
 @{
     ViewData["Title"] = "My Requests";
     ViewData["HideNavbar"] = true;
     ViewData["HideFooter"] = true;
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    int pageSize = ViewBag.PageSize ?? 5;
 }
 
 @Html.Partial("_Navbar")
@@ -59,7 +61,7 @@
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             width: 200px;
         }
 
@@ -71,14 +73,13 @@
         overflow: hidden;
     }
 
-        table th,
-        table td {
-            padding: 12px;
-            text-align: left;
-            font-size: 0.9rem;
-            border-bottom: 1px solid #eee;
-            color: #000;
-        }
+    th, td {
+        padding: 12px;
+        text-align: left;
+        font-size: 0.9rem;
+        border-bottom: 1px solid #eee;
+        color: #000;
+    }
 
     .badge {
         padding: 4px 12px;
@@ -100,8 +101,22 @@
         border-color: #dc3545;
     }
 
+    .pagination-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 25px;
+        flex-wrap: wrap;
+    }
+
     .pagination .page-link {
+        padding: 4px 12px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
         color: #000;
+        margin: 0 3px;
+        text-decoration: none;
+        font-size: 0.85rem;
     }
 
     .pagination .active .page-link {
@@ -109,7 +124,12 @@
         color: #fff;
         border-color: #000;
     }
+
+    .rows-dropdown {
+        font-size: 0.85rem !important;
+    }
 </style>
+
 
 <div class="container py-5">
     <div class="feature-buttons">
@@ -148,8 +168,8 @@
         <tbody>
             @if (Model != null && Model.Any())
             {
-                int index = 0;
-                foreach (var req in Model.OrderBy(r => r.RequestId))
+                int index = (currentPage - 1) * pageSize;
+                foreach (var req in Model)
                 {
                     var statusClass = req.Status switch
                     {
@@ -171,14 +191,31 @@
             }
         </tbody>
     </table>
+    <div class="pagination-controls mt-3">
+        <form method="get" asp-controller="Request" asp-action="UserRequests" class="d-flex align-items-center" style="font-size: 0.85rem;">
+            <label class="me-2">Rows per page:</label>
+            <select name="pageSize" class="rows-dropdown form-select form-select-sm w-auto" onchange="this.form.submit()">
+                <option value="5" selected="@(pageSize == 5)">5</option>
+                <option value="10" selected="@(pageSize == 10)">10</option>
+                <option value="15" selected="@(pageSize == 15)">15</option>
+            </select>
+            <input type="hidden" name="page" value="@currentPage" />
+        </form>
 
-    <div class="d-flex justify-content-center mt-3">
         <nav>
             <ul class="pagination pagination-sm mb-0">
-                <li class="page-item disabled"><a class="page-link" href="#">‹ Previous</a></li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next ›</a></li>
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("UserRequests", "Request", new { page = currentPage - 1, pageSize = pageSize })">«</a>
+                </li>
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("UserRequests", "Request", new { page = i, pageSize = pageSize })">@i</a>
+                    </li>
+                }
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("UserRequests", "Request", new { page = currentPage + 1, pageSize = pageSize })">»</a>
+                </li>
             </ul>
         </nav>
     </div>
@@ -189,7 +226,6 @@
         const searchInput = document.getElementById("searchInput");
         const typeFilter = document.getElementById("typeFilter");
         const statusFilter = document.getElementById("statusFilter");
-
         const rows = document.querySelectorAll(".request-row");
 
         function filterRows() {
@@ -200,11 +236,9 @@
             rows.forEach(row => {
                 const typeVal = row.querySelector(".type")?.textContent.toLowerCase();
                 const statusVal = row.querySelector(".status")?.textContent.toLowerCase();
-
                 const matchesSearch = !search || typeVal.includes(search);
                 const matchesType = !type || typeVal === type;
                 const matchesStatus = !status || statusVal.includes(status);
-
                 row.style.display = (matchesSearch && matchesType && matchesStatus) ? "" : "none";
             });
         }

@@ -1,4 +1,4 @@
-﻿namespace SkylineHOA.Models.ViewModels
+﻿namespace SkylineHOA.Models
 {
     public class RequestWithUser
     {

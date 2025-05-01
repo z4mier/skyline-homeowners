@@ -23,14 +23,12 @@ namespace SkylineHOA.Controllers
         [HttpPost("Create")]
         public IActionResult Create([FromBody] Request model)
         {
-            // Get logged-in user ID from claims
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
             {
                 return Unauthorized("User not logged in.");
             }
 
-            // Assign system-generated fields
             model.UserId = userId;
             model.DateSubmitted = DateTime.Now;
             model.Status = "Pending";
@@ -56,21 +54,32 @@ namespace SkylineHOA.Controllers
 
         // GET: /Request/UserRequests
         [HttpGet("UserRequests")]
-        public IActionResult UserRequests()
+        public IActionResult UserRequests(int page = 1, int pageSize = 5)
         {
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
             {
-                return RedirectToAction("Login", "Account"); // Or return Unauthorized();
+                return RedirectToAction("Login", "Account");
             }
 
-            var requests = _context.Requests
+            var allRequests = _context.Requests
                 .Where(r => r.UserId == userId)
                 .OrderByDescending(r => r.DateSubmitted)
                 .ToList();
 
-            return View("UserRequests", requests);
+            int totalRequests = allRequests.Count;
+            int totalPages = (int)Math.Ceiling((double)totalRequests / pageSize);
+
+            var pagedRequests = allRequests
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageSize = pageSize;
+
+            return View("UserRequests", pagedRequests);
         }
     }
 }
