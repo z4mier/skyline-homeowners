@@ -76,12 +76,13 @@ namespace SkylineHOA.Controllers
             }
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim("FullName", $"{user.FirstName} {user.LastName}"),
-                new Claim("UserID", user.UserID.ToString()),
-                new Claim(ClaimTypes.Role, user.Role ?? "User")
-            };
+    {
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim("FullName", $"{user.FirstName} {user.LastName}"),
+        new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()), // ✅ This is needed for RequestController
+        new Claim("UserID", user.UserID.ToString()), // Optional: you can still use this elsewhere
+        new Claim(ClaimTypes.Role, user.Role ?? "User")
+    };
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
@@ -96,6 +97,7 @@ namespace SkylineHOA.Controllers
                 _ => RedirectToAction("Dashboard", "Home")
             };
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Logout()

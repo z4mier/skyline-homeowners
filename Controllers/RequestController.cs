@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using SkylineHOA.Data;
 using SkylineHOA.Models;
 using System;
@@ -10,6 +9,7 @@ using System.Security.Claims;
 namespace SkylineHOA.Controllers
 {
     [Authorize]
+    [Route("Request")]
     public class RequestController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,55 +19,58 @@ namespace SkylineHOA.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public IActionResult ViewRequests()
+        // POST: /Request/Create
+        [HttpPost("Create")]
+        public IActionResult Create([FromBody] Request model)
         {
-            var userIdClaim = User.FindFirst("UserID");
-            if (userIdClaim == null)
-                return Unauthorized();
+            // Get logged-in user ID from claims
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized("User not logged in.");
+            }
 
-            int userId = int.Parse(userIdClaim.Value);
+            // Assign system-generated fields
+            model.UserId = userId;
+            model.DateSubmitted = DateTime.Now;
+            model.Status = "Pending";
 
-            var userRequests = _context.Requests
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .Select(x => new
+                    {
+                        Field = x.Key,
+                        Error = x.Value.Errors.First().ErrorMessage
+                    });
+
+                return BadRequest(new { message = "Validation failed", errors });
+            }
+
+            _context.Requests.Add(model);
+            _context.SaveChanges();
+
+            return Ok(new { message = "Request submitted successfully!" });
+        }
+
+        // GET: /Request/UserRequests
+        [HttpGet("UserRequests")]
+        public IActionResult UserRequests()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                return RedirectToAction("Login", "Account"); // Or return Unauthorized();
+            }
+
+            var requests = _context.Requests
                 .Where(r => r.UserId == userId)
                 .OrderByDescending(r => r.DateSubmitted)
                 .ToList();
 
-            return View(userRequests);
-        }
-
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Request model)
-        {
-            var userIdClaim = User.FindFirst("UserID");
-            if (userIdClaim == null)
-                return Unauthorized();
-
-            int userId = int.Parse(userIdClaim.Value);
-
-            if (ModelState.IsValid)
-            {
-                model.UserId = userId;
-                model.RequestId = Guid.NewGuid().ToString();
-                model.DateSubmitted = DateTime.Now;
-                model.Status = "Pending";
-                model.DateUpdated = null;
-
-                _context.Requests.Add(model);
-                _context.SaveChanges();
-
-                TempData["Success"] = "Request submitted successfully!";
-                return RedirectToAction("ViewRequests");
-            }
-
-            return View(model);
+            return View("UserRequests", requests);
         }
     }
 }

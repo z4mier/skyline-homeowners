@@ -9,27 +9,27 @@
     <!-- Quick Actions -->
     <div class="row g-4 mb-4 text-center">
         <div class="col-md-3">
-            <a href="/Home/AdminDashboard" class="d-block border border-dark rounded p-4 text-decoration-none text-dark">
+            <a href="/Home/AdminDashboard" class="quick-card d-block border border-dark rounded p-4 text-decoration-none text-dark">
                 <i class="bi bi-house-door-fill fs-3 mb-2 d-block"></i>
                 <strong>Home</strong>
             </a>
         </div>
         <div class="col-md-3">
-            <a href="/Admin/EventCalendar" class="d-block border border-dark rounded p-4 text-decoration-none text-dark">
+            <a href="/Admin/EventCalendar" class="quick-card d-block border border-dark rounded p-4 text-decoration-none text-dark">
                 <i class="bi bi-calendar-event-fill fs-3 mb-2 d-block"></i>
                 <strong>Event Calendar</strong>
             </a>
         </div>
         <div class="col-md-3">
-            <a href="#" class="d-block border border-dark rounded p-4 text-decoration-none text-dark">
+            <a href="#" class="quick-card d-block border border-dark rounded p-4 text-decoration-none text-dark">
                 <i class="bi bi-credit-card-2-back-fill fs-3 mb-2 d-block"></i>
                 <strong>Bills & Payments</strong>
             </a>
         </div>
         <div class="col-md-3">
-            <a href="#" class="d-block border border-dark rounded p-4 text-decoration-none text-dark">
-                <i class="bi bi-journal-text fs-3 mb-2 d-block"></i>
-                <strong>Contacts</strong>
+            <a href="#" class="quick-card d-block border border-dark rounded p-4 text-decoration-none text-dark">
+                <i class="bi bi-clipboard-data fs-3 mb-2 d-block"></i>
+                <strong>Reports</strong>
             </a>
         </div>
     </div>
@@ -37,14 +37,14 @@
     <!-- Stats Section -->
     <div class="row g-4 mb-4 text-center">
         <div class="col-md-6">
-            <div class="border border-dark rounded p-4">
+            <div class="quick-card border border-dark rounded p-4">
                 <i class="bi bi-people-fill fs-1 mb-2 d-block"></i>
                 <h5 class="mb-1 fw-semibold">Total Residents</h5>
                 <h3 class="fw-bold">@(ViewBag.TotalResidents ?? 0)</h3>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="border border-dark rounded p-4">
+            <div class="quick-card border border-dark rounded p-4">
                 <i class="bi bi-person-fill fs-1 mb-2 d-block"></i>
                 <h5 class="mb-1 fw-semibold">Total Staffs</h5>
                 <h3 class="fw-bold">@(ViewBag.TotalStaffs ?? 0)</h3>
@@ -55,7 +55,7 @@
     <!-- Requests Overview -->
     <div class="row g-4 mb-4">
         <div class="col-md-6">
-            <div class="border border-dark rounded p-4">
+            <div class="quick-card border border-dark rounded p-4">
                 <h5 class="fw-bold">Amenity Booking</h5>
                 <hr />
                 <p><strong>Pending Requests</strong> <span class="float-end fw-semibold">0</span></p>
@@ -64,8 +64,8 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="border border-dark rounded p-4">
-                <h5 class="fw-bold">Maintenance Request</h5>
+            <div class="quick-card border border-dark rounded p-4">
+                <h5 class="fw-bold">Service Requests</h5>
                 <hr />
                 <p><strong>Pending Requests</strong> <span class="float-end fw-semibold">0</span></p>
                 <p><strong>Approved Requests</strong> <span class="float-end fw-semibold">0</span></p>
@@ -227,4 +227,19 @@
     .dashboard-tile i {
         font-size: 2rem;
     }
+
+    /* Hover effect for quick cards only */
+    .quick-card {
+        background-color: #fff;
+        color: #000;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+        .quick-card:hover {
+            transform: translateY(-5px);
+            background-color: #f7f7f7;
+            text-decoration: none;
+            color: #000;
+        }
 </style>

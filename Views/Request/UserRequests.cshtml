@@ -52,7 +52,8 @@
         flex-wrap: wrap;
     }
 
-        .search-bar input, .search-bar select {
+        .search-bar input,
+        .search-bar select {
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 8px;
@@ -68,7 +69,8 @@
         overflow: hidden;
     }
 
-        table th, table td {
+        table th,
+        table td {
             padding: 12px;
             text-align: left;
             font-size: 0.9rem;
@@ -104,17 +106,18 @@
     </div>
 
     <div class="search-bar">
-        <input type="text" placeholder="Search requests..." disabled />
-        <select disabled>
-            <option>All Types</option>
-            <option>Maintenance</option>
+        <input type="text" id="searchInput" placeholder="Search requests...">
+        <select id="typeFilter">
+            <option value="">All Types</option>
+            <option>Maintenance Request</option>
             <option>Gate Pass</option>
-            <option>Lost & Found</option>
+            <option>Lost Item</option>
+            <option>Found Item</option>
             <option>Complaint</option>
             <option>Feedback</option>
         </select>
-        <select disabled>
-            <option>All Statuses</option>
+        <select id="statusFilter">
+            <option value="">All Statuses</option>
             <option>Pending</option>
             <option>Approved</option>
             <option>Resolved</option>
@@ -124,8 +127,7 @@
         </select>
     </div>
 
-    <!-- Requests Table -->
-    <table>
+    <table id="requestTable">
         <thead>
             <tr>
                 <th>ID</th>
@@ -141,21 +143,19 @@
             {
                 foreach (var req in Model)
                 {
-                    <tr>
+                    <tr class="request-row">
                         <td>@req.RequestId</td>
-                        <td>@req.RequestType ?? "-"</td>
-                        <td>@req.Title ?? "-"</td>
-                        <td><span class="badge">@req.Status ?? "Pending"</span></td>
-                        <td>@(req.DateSubmitted.ToString("yyyy-MM-dd"))</td>
-                        <td>@req.Urgency ?? "Normal"</td>
+                        <td class="type">@(req.RequestType ?? "-")</td>
+                        <td class="title">@(req.Title ?? "-")</td>
+                        <td class="status"><span class="badge">@(req.Status ?? "Pending")</span></td>
+                        <td>@req.DateSubmitted.ToString("yyyy-MM-dd")</td>
+                        <td>@(req.Urgency ?? "Normal")</td>
                     </tr>
                 }
             }
             else
             {
-                <tr>
-                    <td colspan="6" class="text-center">No requests found.</td>
-                </tr>
+                <tr><td colspan="6" class="text-center">No requests found.</td></tr>
             }
         </tbody>
     </table>
@@ -171,3 +171,35 @@
         </nav>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchInput");
+        const typeFilter = document.getElementById("typeFilter");
+        const statusFilter = document.getElementById("statusFilter");
+
+        const rows = document.querySelectorAll(".request-row");
+
+        function filterRows() {
+            const search = searchInput.value.toLowerCase();
+            const type = typeFilter.value.toLowerCase();
+            const status = statusFilter.value.toLowerCase();
+
+            rows.forEach(row => {
+                const title = row.querySelector(".title")?.textContent.toLowerCase();
+                const typeVal = row.querySelector(".type")?.textContent.toLowerCase();
+                const statusVal = row.querySelector(".status")?.textContent.toLowerCase();
+
+                const matchesSearch = !search || title.includes(search);
+                const matchesType = !type || typeVal === type;
+                const matchesStatus = !status || statusVal.includes(status);
+
+                row.style.display = (matchesSearch && matchesType && matchesStatus) ? "" : "none";
+            });
+        }
+
+        searchInput.addEventListener("input", filterRows);
+        typeFilter.addEventListener("change", filterRows);
+        statusFilter.addEventListener("change", filterRows);
+    });
+</script>

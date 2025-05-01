@@ -5,10 +5,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@using System.Security.Claims
 @Html.Partial("_Navbar")
+
+<!-- ✅ FIXED hidden input -->
+<input type="hidden" id="currentUserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Fo3rlrZj/kTcXn6Nw6y9M5n0TJLKeRbKfa4vZxD+OjL3qF0TBBbX+XPoZJLxNfK+Kc2kE6pbH6YMB6dfL3XTmQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 
 <style>
     body {
@@ -91,6 +96,13 @@
         transition: all 0.2s ease;
     }
 
+        .btn-black-outline:hover {
+            background-color: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+
     .lost-found-toggle {
         display: flex;
         justify-content: center;
@@ -137,6 +149,8 @@
 </style>
 
 <div class="container py-5">
+    <input type="hidden" id="currentUserId" value="@User.FindFirstValue("UserId")" />
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="page-title">Forms & Requests</h1>
@@ -149,7 +163,7 @@
 
     <div class="feature-buttons mb-4">
         <a href="@Url.Action("ViewForms", "Home")" class="btn-toggle">View Downloadable Forms</a>
-        <a href="@Url.Action("ViewRequests", "Request")">View Requests</a>
+        <a href="@Url.Action("UserRequests", "Request")">View Requests</a>
     </div>
 
 
@@ -174,10 +188,6 @@
                 <form>
                     <div class="modal-body">
                         <div class="row mb-3">
-                            <div class="col">
-                                <label class="form-label">Date:</label>
-                                <input type="date" class="form-control" required>
-                            </div>
                             <div class="col">
                                 <label class="form-label">Name:</label>
                                 <input type="text" class="form-control" placeholder="Full name" required>
@@ -687,20 +697,77 @@
             };
 
             const confirmationModal = new bootstrap.Modal(document.getElementById("confirmationModal"));
+            const currentUserId = parseInt(document.getElementById('currentUserId')?.value || "0");
 
             Object.entries(modalFormMap).forEach(([modalId, formSelector]) => {
                 const modal = document.getElementById(modalId);
                 if (modal) {
                     const form = modal.querySelector(formSelector);
                     if (form) {
-                        form.addEventListener("submit", function (e) {
+                        form.addEventListener("submit", async function (e) {
                             e.preventDefault();
+
                             const modalInstance = bootstrap.Modal.getInstance(modal);
                             if (modalInstance) modalInstance.hide();
-                            confirmationModal.show();
+
+                            // Identify the Request Type
+                            let requestType = "";
+                            switch (modalId) {
+                                case "maintenanceModal": requestType = "Maintenance Request"; break;
+                                case "gatePassModal": requestType = "Gate Pass"; break;
+                                case "lostModal": requestType = "Lost Item"; break;
+                                case "foundModal": requestType = "Found Item"; break;
+                                case "complaintModal": requestType = "Complaint"; break;
+                                case "feedbackModal": requestType = "Feedback"; break;
+                            }
+
+                            // Get input values
+                            const titleInput = form.querySelector('input[placeholder], input[type="text"]');
+                            const descriptionInput = form.querySelector('textarea');
+
+                            const titleValue = titleInput?.value.trim() || "";
+                            const descriptionValue = descriptionInput?.value.trim() || "";
+
+                            // Get urgency if available
+                            let urgencyValue = "Normal";
+                            const urgencySelect = form.querySelector('select');
+                            if (urgencySelect && urgencySelect.selectedIndex > 0) {
+                                urgencyValue = urgencySelect.options[urgencySelect.selectedIndex].text;
+                            }
+
+                            // Final JSON payload
+                            const requestData = {
+                                userId: currentUserId,
+                                requestType: requestType,
+                                title: titleValue,
+                                description: descriptionValue,
+                                urgency: urgencyValue,
+                                status: "Pending",
+                                dateSubmitted: new Date().toISOString()
+                            };
+
+                            try {
+                                const response = await fetch('/Request/Create', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(requestData)
+                                });
+
+                                if (response.ok) {
+                                    confirmationModal.show();
+                                } else {
+                                    const errorText = await response.text();
+                                    alert("❌ Failed: " + errorText);
+                                }
+                            } catch (error) {
+                                console.error(error);
+                                alert("❌ An error occurred. Please try again.");
+                            }
                         });
                     }
                 }
             });
+        });
     </script>
-
