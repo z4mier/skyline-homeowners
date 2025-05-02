@@ -8,7 +8,7 @@ namespace SkylineHOA.Models
     {
         public int BillId { get; set; }
 
-        [BindNever] // prevent model binding for UserId; it will be set manually in the controller
+        [BindNever]
         public string? UserId { get; set; }
 
         [Required(ErrorMessage = "Amenity name is required.")]

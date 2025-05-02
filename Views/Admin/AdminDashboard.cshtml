@@ -55,14 +55,17 @@
     <!-- Requests Overview -->
     <div class="row g-4 mb-4">
         <div class="col-md-6">
-            <div class="quick-card border border-dark rounded p-4">
-                <h5 class="fw-bold">Amenity Booking</h5>
-                <hr />
-                <p><strong>Pending Requests</strong> <span class="float-end fw-semibold">0</span></p>
-                <p><strong>Approved Requests</strong> <span class="float-end fw-semibold">0</span></p>
-                <p><strong>Denied Requests</strong> <span class="float-end fw-semibold">0</span></p>
-            </div>
+            <a href="/Admin/AmenityBookings" class="text-decoration-none text-dark">
+                <div class="quick-card border border-dark rounded p-4">
+                    <h5 class="fw-bold">Amenity Booking</h5>
+                    <hr />
+                    <p><strong>Pending Requests</strong> <span class="float-end fw-semibold">@ViewBag.AmenityPending</span></p>
+                    <p><strong>Approved Requests</strong> <span class="float-end fw-semibold">@ViewBag.AmenityApproved</span></p>
+                    <p><strong>Denied Requests</strong> <span class="float-end fw-semibold">@ViewBag.AmenityDenied</span></p>
+                </div>
+            </a>
         </div>
+
         <div class="col-md-6">
             <a href="/Admin/ServiceRequests" class="text-decoration-none text-dark">
                 <div class="quick-card border border-dark rounded p-4">
