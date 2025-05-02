@@ -14,6 +14,8 @@ namespace SkylineHOA.Data
         public DbSet<Request> Requests { get; set; }
         public DbSet<Announcement> Announcements { get; set; }
         public DbSet<Event> Events { get; set; }
+        public DbSet<Bill> Bills { get; set; }
+
 
 
     }
