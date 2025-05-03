@@ -1,0 +1,118 @@
+﻿@{
+    ViewData["Title"] = "Department Heads";
+    ViewData["HideNavbar"] = true;
+    ViewData["HideFooter"] = true;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_Navbar")
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f9f9f9;
+    }
+
+    .page-title {
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+    }
+
+    .feature-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+        .feature-buttons a {
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 1px solid #000;
+            color: #000;
+            transition: all 0.2s ease;
+            background-color: transparent;
+        }
+
+            .feature-buttons a:hover {
+                background-color: #000;
+                color: #fff;
+            }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 14px 18px;
+        text-align: left;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #eee;
+        color: #000;
+    }
+
+    th {
+        font-weight: 600;
+        background-color: #f1f1f1;
+    }
+
+    .table-container {
+        margin-top: 40px;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="feature-buttons">
+        <h1 class="page-title mb-0">Department Heads</h1>
+        <a href="@Url.Action("Dashboard", "Staff")">&larr; Back</a>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Department / Role</th>
+                    <th>Contact Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Marco Tan</td>
+                    <td>Community Manager</td>
+                    <td>0915-234-7890</td>
+                </tr>
+                <tr>
+                    <td>John Mateo</td>
+                    <td>Maintenance Staff</td>
+                    <td>0912-345-6789</td>
+                </tr>
+                <tr>
+                    <td>Maria Dela Cruz</td>
+                    <td>Security Staff</td>
+                    <td>0999-888-1122</td>
+                </tr>
+                <tr>
+                    <td>Roberto Reyes</td>
+                    <td>Sanitation & Cleaning Staff</td>
+                    <td>0917-654-3210</td>
+                </tr>
+                <tr>
+                    <td>Alice Navarro</td>
+                    <td>Delivery & Parcel Staff</td>
+                    <td>0933-456-7890</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

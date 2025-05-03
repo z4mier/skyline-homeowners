@@ -2,10 +2,101 @@
     ViewData["Title"] = "Staff Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@Html.Partial("_Navbar")
 
-<h1>Welcome, Staff</h1>
-<p>You are now viewing the Staff dashboard.</p>
-@if (TempData["DebugRole"] != null)
-{
-    <p>@TempData["DebugRole"]</p>
-}
+<div class="container my-5" style="font-family: 'Inter', sans-serif;">
+
+    <div class="row g-4 mb-4 text-center">
+        <div class="col-md-3">
+            <a href="/Home/StaffDashboard" class="quick-card d-block border border-dark rounded p-4 text-decoration-none text-dark">
+                <i class="bi bi-house-door-fill fs-3 mb-2 d-block"></i>
+                <strong>Home</strong>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/Staff/DepartmentHeads" class="quick-card d-block border border-dark rounded p-4 text-decoration-none text-dark">
+                <i class="bi bi-people-fill fs-3 mb-2 d-block"></i>
+                <strong>Department Heads</strong>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/Staff/AssignTask" class="quick-card d-block border border-dark rounded p-4 text-decoration-none text-dark">
+                <i class="bi bi-pencil-square fs-3 mb-2 d-block"></i>
+                <strong>Assign Task</strong>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/Staff/ViewTasks" class="quick-card d-block border border-dark rounded p-4 text-decoration-none text-dark">
+                <i class="bi bi-clipboard-check fs-3 mb-2 d-block"></i>
+                <strong>View Task</strong>
+            </a>
+        </div>
+    </div>
+
+    <div class="border border-dark rounded p-4 mb-5">
+        <h4 class="fw-bold">Announcement</h4>
+
+        <h5 class="fw-bold mt-3 mb-2">Posted Announcement</h5>
+        <div class="overflow-auto" style="max-height: 320px;">
+            @if (ViewBag.Announcements != null && ViewBag.Announcements.Count > 0)
+            {
+                foreach (var ann in ViewBag.Announcements)
+                {
+                    <div class="bg-white rounded border px-4 py-3 mb-3 shadow-sm">
+                        <h6 class="fw-bold">@ann.Title</h6>
+                        <p class="mb-1">@ann.Message</p>
+                        <div class="text-end text-muted small">
+                            Admin | @ann.CreatedAt.ToString("dd/MM/yyyy hh:mm tt")
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted ps-2">No announcements found.</p>
+            }
+        </div>
+
+        <div class="text-end mt-2">
+            <a href="/Staff/StaffAnnouncements" class="fw-semibold text-dark text-decoration-none">
+                See more <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    .quick-card {
+        background-color: #fff;
+        color: #000;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+        .quick-card:hover {
+            transform: translateY(-5px);
+            background-color: #f7f7f7;
+            text-decoration: none;
+            color: #000;
+        }
+
+    .btn-outline-black {
+        background-color: #fff;
+        color: #000;
+        border: 1px solid #000;
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-weight: 500;
+        font-size: 13px;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.2s ease;
+        display: inline-block;
+        text-align: center;
+    }
+
+        .btn-outline-black:hover {
+            background-color: #f1f1f1;
+        }
+</style>

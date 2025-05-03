@@ -21,9 +21,9 @@
             </a>
         </div>
         <div class="col-md-3">
-            <a href="#" class="quick-card d-block border border-dark rounded p-4 text-decoration-none text-dark">
-                <i class="bi bi-credit-card-2-back-fill fs-3 mb-2 d-block"></i>
-                <strong>Bills & Payments</strong>
+            <a href="/Admin/Contacts" class="quick-card d-block border border-dark rounded p-4 text-decoration-none text-dark">
+                <i class="bi bi-person-lines-fill fs-3 mb-2 d-block"></i>
+                <strong>Contacts</strong>
             </a>
         </div>
         <div class="col-md-3">
@@ -59,25 +59,42 @@
                 <div class="quick-card border border-dark rounded p-4">
                     <h5 class="fw-bold">Amenity Booking</h5>
                     <hr />
-                    <p><strong>Pending Requests</strong> <span class="float-end fw-semibold">@ViewBag.AmenityPending</span></p>
-                    <p><strong>Approved Requests</strong> <span class="float-end fw-semibold">@ViewBag.AmenityApproved</span></p>
-                    <p><strong>Denied Requests</strong> <span class="float-end fw-semibold">@ViewBag.AmenityDenied</span></p>
+                    <p>
+                        <strong>Pending Requests</strong>
+                        <span class="float-end fw-semibold">
+                            @((ViewBag.AmenityPending != null) ? ViewBag.AmenityPending.ToString() : "0")
+                        </span>
+                    </p>
+                    <p>
+                        <strong>Approved Requests</strong>
+                        <span class="float-end fw-semibold">
+                            @((ViewBag.AmenityApproved != null) ? ViewBag.AmenityApproved.ToString() : "0")
+                        </span>
+                    </p>
+                    <p>
+                        <strong>Denied Requests</strong>
+                        <span class="float-end fw-semibold">
+                            @((ViewBag.AmenityDenied != null) ? ViewBag.AmenityDenied.ToString() : "0")
+                        </span>
+                    </p>
                 </div>
             </a>
         </div>
+
 
         <div class="col-md-6">
             <a href="/Admin/ServiceRequests" class="text-decoration-none text-dark">
                 <div class="quick-card border border-dark rounded p-4">
                     <h5 class="fw-bold">Service Requests</h5>
                     <hr />
-                    <p><strong>Pending Requests</strong> <span class="float-end fw-semibold">@ViewBag.PendingRequests</span></p>
-                    <p><strong>Approved Requests</strong> <span class="float-end fw-semibold">@ViewBag.ApprovedRequests</span></p>
-                    <p><strong>Denied Requests</strong> <span class="float-end fw-semibold">@ViewBag.DeniedRequests</span></p>
+                    <p><strong>Pending Requests</strong> <span class="float-end fw-semibold">@((ViewBag.PendingRequests ?? 0).ToString())</span></p>
+                    <p><strong>Approved Requests</strong> <span class="float-end fw-semibold">@((ViewBag.ApprovedRequests ?? 0).ToString())</span></p>
+                    <p><strong>Denied Requests</strong> <span class="float-end fw-semibold">@((ViewBag.DeniedRequests ?? 0).ToString())</span></p>
                 </div>
             </a>
         </div>
     </div>
+
 
 
     <!-- Announcements -->
@@ -157,9 +174,10 @@
         </div>
 
         <div class="text-end mt-2">
-            <a href="/Home/Announcements" class="fw-semibold text-dark text-decoration-none">
+            <a href="/Admin/AdminAnnouncements" class="fw-semibold text-dark text-decoration-none">
                 See more <i class="bi bi-arrow-right"></i>
             </a>
+
         </div>
     </div>
 </div>

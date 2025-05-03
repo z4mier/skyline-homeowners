@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Staff Announcements";
+    ViewData["HideNavbar"] = true;
+    ViewData["HideFooter"] = true;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var announcements = ViewBag.Announcements as List<Announcement> ?? new List<Announcement>();
+    string sort = Context.Request.Query["sortOrder"];
+}
+
+@Html.Partial("_Navbar")
+
+<div class="container py-5" style="font-family: 'Inter', sans-serif;">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h2 class="fw-bold">Announcements</h2>
+            <p class="text-muted">Stay informed with the latest staff-related updates.</p>
+            <form method="get" class="mt-2">
+                <select name="sortOrder" class="form-select form-select-sm border-dark" style="width: auto;" onchange="this.form.submit()">
+                    <option value="newest" selected="@(sort != "oldest")">Newest First</option>
+                    <option value="oldest" selected="@(sort == "oldest")">Oldest First</option>
+                </select>
+            </form>
+        </div>
+
+        <div>
+            <a href="@Url.Action("Dashboard", "Staff")" class="btn btn-outline-dark">← Back</a>
+        </div>
+    </div>
+
+    @{
+        var filtered = announcements
+        .Where(a => a.Target == "Staff" || a.Target == "Both")
+        .ToList();
+
+        var sorted = (sort == "oldest")
+        ? filtered.OrderBy(a => a.CreatedAt).ToList()
+        : filtered.OrderByDescending(a => a.CreatedAt).ToList();
+    }
+
+    @if (sorted.Any())
+    {
+        <div class="row g-4">
+            @foreach (var ann in sorted)
+            {
+                <div class="col-md-6">
+                    <div class="bg-white border border-dark rounded-4 p-4 shadow-sm h-100 d-flex flex-column justify-content-between">
+                        <div class="mb-3">
+                            <h5 class="fw-bold mb-2">@ann.Title</h5>
+                            <p class="mb-0 text-muted" style="font-size: 0.95rem;">@ann.Message</p>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-secondary">Admin | @ann.CreatedAt.ToString("dd/MM/yyyy hh:mm tt")</small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center mt-4">
+            <p class="text-muted">No announcements available for staff.</p>
+        </div>
+    }
+</div>

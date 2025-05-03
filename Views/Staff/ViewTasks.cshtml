@@ -1,0 +1,136 @@
+﻿@model IEnumerable<SkylineHOA.Models.RequestWithUser>
+
+@{
+    ViewData["Title"] = "View Tasks";
+    ViewData["HideNavbar"] = true;
+    ViewData["HideFooter"] = true;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_Navbar")
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f9f9f9;
+    }
+
+    .page-title {
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+    }
+
+    .feature-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+        .feature-buttons a {
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 1px solid #000;
+            color: #000;
+            transition: all 0.2s ease;
+            background-color: transparent;
+        }
+
+            .feature-buttons a:hover {
+                background-color: #000;
+                color: #fff;
+            }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        font-size: 0.9rem;
+        border-bottom: 1px solid #eee;
+        color: #000;
+    }
+
+    th {
+        font-weight: 600;
+        background-color: #f1f1f1;
+    }
+
+    .badge {
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        border: 1px solid #aaa;
+        background: transparent;
+        color: #000;
+    }
+
+    .badge-approved {
+        color: #198754;
+        border-color: #198754;
+    }
+
+    .badge-pending {
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .badge-denied {
+        color: #dc3545;
+        border-color: #dc3545;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="feature-buttons">
+        <h1 class="page-title mb-0">View Assigned Tasks</h1>
+        <a href="@Url.Action("Dashboard", "Staff")">← Back</a>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Urgency</th>
+                <th>Date</th>
+                <th>Assigned Department</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var task in Model)
+                {
+                    <tr>
+                        <td>@task.RequestId</td>
+                        <td>@task.UserName</td>
+                        <td>@task.RequestType</td>
+                        <td>@task.Urgency</td>
+                        <td>@task.DateSubmitted.ToString("yyyy-MM-dd")</td>
+                        <td>@task.AssignedDepartment</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td colspan="6" class="text-center">No tasks found.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>

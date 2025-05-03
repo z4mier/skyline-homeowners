@@ -18,20 +18,39 @@ namespace SkylineHOA.Controllers
             _context = context;
         }
 
+        public IActionResult Contacts()
+        {
+            return View("~/Views/Admin/Contacts.cshtml"); 
+        }
+
+        [Authorize(Roles = "Admin")]
         public IActionResult AdminDashboard()
         {
             ViewBag.TotalResidents = _context.Users.Count(u => u.Role == "Resident");
             ViewBag.TotalStaffs = _context.Users.Count(u => u.Role == "Staff");
 
-            ViewBag.AmenityPending = _context.Bills.Count(b => b.Status == "Pending");
-            ViewBag.AmenityApproved = _context.Bills.Count(b => b.Status == "Approved");
-            ViewBag.AmenityDenied = _context.Bills.Count(b => b.Status == "Denied");
+            ViewBag.AmenityPending = _context.Bills
+                .Where(b => !string.IsNullOrEmpty(b.AmenityName) && b.Status.Trim() == "Pending")
+                .Count();
+
+            ViewBag.AmenityApproved = _context.Bills
+                .Where(b => !string.IsNullOrEmpty(b.AmenityName) && b.Status.Trim() == "Approved")
+                .Count();
+
+            ViewBag.AmenityDenied = _context.Bills
+                .Where(b => !string.IsNullOrEmpty(b.AmenityName) && b.Status.Trim() == "Denied")
+                .Count();
+
+            ViewBag.PendingRequests = _context.Requests.Count(r => r.Status.Trim() == "Pending");
+            ViewBag.ApprovedRequests = _context.Requests.Count(r => r.Status.Trim() == "Approved");
+            ViewBag.DeniedRequests = _context.Requests.Count(r => r.Status.Trim() == "Denied");
 
             ViewBag.Announcements = _context.Announcements
                 .OrderByDescending(a => a.CreatedAt)
+                .Take(10)
                 .ToList();
 
-            return View("~/Views/Home/AdminDashboard.cshtml");
+            return View("~/Views/Admin/AdminDashboard.cshtml");
         }
 
         public IActionResult EventCalendar(int? month, int? year)
@@ -88,15 +107,17 @@ namespace SkylineHOA.Controllers
 
             return RedirectToAction("ServiceRequests");
         }
+
         public IActionResult AmenityBookings(int page = 1, int pageSize = 5)
         {
             var query = from b in _context.Bills
+                        where b.AmenityName != null
                         join u in _context.Users on b.UserId equals u.UserID.ToString()
                         orderby b.CreatedAt descending
                         select new BillWithUser
                         {
                             BillId = b.BillId,
-                            AmenityName = b.AmenityName,    
+                            AmenityName = b.AmenityName,
                             Status = b.Status,
                             BookingDate = b.BookingDate,
                             PaymentMethod = b.PaymentMethod,
@@ -113,7 +134,6 @@ namespace SkylineHOA.Controllers
             return View("~/Views/Admin/AmenityBookings.cshtml", paginated);
         }
 
-
         [HttpPost]
         public IActionResult UpdateBookingStatus(int id, string status)
         {
@@ -126,5 +146,12 @@ namespace SkylineHOA.Controllers
 
             return RedirectToAction("AmenityBookings");
         }
+        public IActionResult AdminAnnouncements(string sortOrder)
+        {
+            var announcements = _context.Announcements.ToList();
+            ViewBag.Announcements = announcements;
+            return View();
+        }
+
     }
 }

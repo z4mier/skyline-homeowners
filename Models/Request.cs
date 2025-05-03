@@ -23,6 +23,7 @@ namespace SkylineHOA.Models
 
         public DateTime DateSubmitted { get; set; } = DateTime.Now;
         public string? ApprovedBy { get; set; }
+        public string? AssignedDepartment { get; set; }
 
     }
 }

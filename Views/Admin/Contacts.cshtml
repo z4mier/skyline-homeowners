@@ -1,0 +1,130 @@
+﻿@{
+    ViewData["Title"] = "Staff Contacts";
+    ViewData["HideNavbar"] = true;
+    ViewData["HideFooter"] = true;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Html.Partial("_Navbar")
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f9f9f9;
+    }
+
+    .page-title {
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #222;
+    }
+
+    .staff-card {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #fff;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .staff-title {
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .staff-role {
+        color: #555;
+        font-size: 0.875rem;
+        margin-top: 4px;
+    }
+
+    .btn-call {
+        color: #000;
+        font-size: 0.90rem;
+        padding: 6px 14px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 500;
+        background-color: #f0f0f0;
+    }
+
+    .btn-back {
+        background-color: #000;
+        color: #fff;
+        font-weight: 500;
+        border: 1px solid #000;
+        padding: 6px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="page-title">Staff Contacts</h1>
+            <p class="subtitle">Reach out to essential personnel in the building.</p>
+        </div>
+        <div class="text-end">
+            <a href="@Url.Action("AdminDashboard", "Admin")" class="btn btn-outline-dark">← Back</a>
+        </div>
+    </div>
+
+    <div class="staff-card">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <div class="staff-title">🔧 John Mateo</div>
+                <div class="staff-role">Maintenance Staff</div>
+            </div>
+            <button class="btn-call">📞 0912-345-6789</button>
+        </div>
+    </div>
+
+    <div class="staff-card">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <div class="staff-title">🛡️ Maria Dela Cruz</div>
+                <div class="staff-role">Security Staff</div>
+            </div>
+            <button class="btn-call">📞 0999-888-1122</button>
+        </div>
+    </div>
+
+    <div class="staff-card">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <div class="staff-title">🧹 Roberto Reyes</div>
+                <div class="staff-role">Sanitation & Cleaning</div>
+            </div>
+            <button class="btn-call">📞 0917-654-3210</button>
+        </div>
+    </div>
+
+    <div class="staff-card">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <div class="staff-title">📦 Alice Navarro</div>
+                <div class="staff-role">Delivery & Parcel Staff</div>
+            </div>
+            <button class="btn-call">📞 0933-456-7890</button>
+        </div>
+    </div>
+
+    <div class="staff-card">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <div class="staff-title">👥 Marco Tan</div>
+                <div class="staff-role">Community Manager</div>
+            </div>
+            <button class="btn-call">📞 0915-234-7890</button>
+        </div>
+    </div>
+</div>

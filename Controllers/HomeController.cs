@@ -38,10 +38,25 @@ namespace SkylineHOA.Controllers
                 return RedirectToAction("AdminDashboard");
 
             if (role == "Staff")
-                return RedirectToAction("StaffDashboard");
+                return RedirectToAction("StaffDashboard"); 
 
             return View();
         }
+
+        [Authorize(Roles = "Staff")]
+        public IActionResult StaffDashboard()
+        {
+            var announcements = _context.Announcements
+                .Where(a => a.Target == "Staff" || a.Target == "Both")
+                .OrderByDescending(a => a.CreatedAt)
+                .Take(5)
+                .ToList();
+
+            ViewBag.Announcements = announcements;
+
+            return View("~/Views/Staff/StaffDashboard.cshtml");
+        }
+
 
         [Authorize]
         public IActionResult AmenityBooking()
@@ -60,11 +75,11 @@ namespace SkylineHOA.Controllers
         {
             return View();
         }
+
         public IActionResult ViewForms()
         {
             return View();
         }
-
 
         [Authorize]
         public IActionResult Announcements()
@@ -85,31 +100,23 @@ namespace SkylineHOA.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult AdminDashboard()
         {
-            var announcements = _context.Announcements
+            ViewBag.TotalResidents = _context.Users.Count(u => u.Role == "Resident");
+            ViewBag.TotalStaffs = _context.Users.Count(u => u.Role == "Staff");
+
+            ViewBag.AmenityPending = _context.Bills.Count(b => !string.IsNullOrEmpty(b.AmenityName) && b.Status.Trim() == "Pending");
+            ViewBag.AmenityApproved = _context.Bills.Count(b => !string.IsNullOrEmpty(b.AmenityName) && b.Status.Trim() == "Approved");
+            ViewBag.AmenityDenied = _context.Bills.Count(b => !string.IsNullOrEmpty(b.AmenityName) && b.Status.Trim() == "Denied");
+
+            ViewBag.PendingRequests = _context.Requests.Count(r => r.Status.Trim() == "Pending");
+            ViewBag.ApprovedRequests = _context.Requests.Count(r => r.Status.Trim() == "Approved");
+            ViewBag.DeniedRequests = _context.Requests.Count(r => r.Status.Trim() == "Denied");
+
+            ViewBag.Announcements = _context.Announcements
                 .OrderByDescending(a => a.CreatedAt)
                 .Take(10)
                 .ToList();
 
-            var totalResidents = _context.Users.Count(u => u.Role == "Resident");
-            var totalStaffs = _context.Users.Count(u => u.Role == "Staff");
-
-            // Count service requests by status
-            ViewBag.PendingRequests = _context.Requests.Count(r => r.Status == "Pending");
-            ViewBag.ApprovedRequests = _context.Requests.Count(r => r.Status == "Approved");
-            ViewBag.DeniedRequests = _context.Requests.Count(r => r.Status == "Denied");
-
-            ViewBag.Announcements = announcements;
-            ViewBag.TotalResidents = totalResidents;
-            ViewBag.TotalStaffs = totalStaffs;
-
             return View("~/Views/Admin/AdminDashboard.cshtml");
-        }
-
-
-        [Authorize(Roles = "Staff")]
-        public IActionResult StaffDashboard()
-        {
-            return View("~/Views/Staff/StaffDashboard.cshtml");
         }
 
         [Authorize]

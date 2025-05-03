@@ -79,8 +79,8 @@ namespace SkylineHOA.Controllers
     {
         new Claim(ClaimTypes.Name, user.Username),
         new Claim("FullName", $"{user.FirstName} {user.LastName}"),
-        new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()), // ✅ This is needed for RequestController
-        new Claim("UserID", user.UserID.ToString()), // Optional: you can still use this elsewhere
+        new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+        new Claim("UserID", user.UserID.ToString()),
         new Claim(ClaimTypes.Role, user.Role ?? "User")
     };
 
